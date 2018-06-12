@@ -24,6 +24,7 @@ public class Game {
     private ArrayList<Apple> apples;
     private ArrayList<Position> board;
     private BoardView view;
+    private Timer timerForTime = new Timer();
 
     public Game(int snakeSize, int width, int height, int speed, BoardView view) {
         this.view = view;
@@ -66,7 +67,7 @@ public class Game {
         int index = (int) (Math.random() * size);
         Position pos = freePos.get(index);
         Apple newApple = new Apple(pos.getX(), pos.getY());
-        
+
         apples.add(newApple);
     }
 
@@ -92,33 +93,43 @@ public class Game {
         tmpBoard.removeAll(apples);
         return tmpBoard;
     }
-    
+
     public ArrayList<Position> getBoard() {
         return (ArrayList<Position>) board.clone();
     }
-    
+
     public ArrayList<Position> getSnakePosition() {
         return snake.getPosition();
     }
-    
+
     public ArrayList<Position> getApples() {
         ArrayList<Position> applesPos = new ArrayList<>();
-        for (Apple a: apples) {
+        for (Apple a : apples) {
             applesPos.add(a.getPos());
         }
         return applesPos;
     }
 
-    public void start() {
-        generateRandomApple();
-        Timer timerForTime = new Timer();
-        timerForTime.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                time += 1;
-            }
-        }, 1000);
+    public int increaseSpeed(int amount) {
+        if (speed - amount <= 0) {
+            amount /= 2;
+        }
+        speed -= amount;
+        timer.cancel();
+        timer = new Timer();
+        resetGameTimer();
+        return amount;
+    }
 
+    public int decreaseSpeed(int amount) {
+        speed += amount;
+        timer.cancel();
+        timer = new Timer();
+        resetGameTimer();
+        return amount *= 2;
+    }
+
+    private void resetGameTimer() {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -136,6 +147,18 @@ public class Game {
                 view.updateUI();
             }
         }, 0, speed);
+    }
+
+    public void start() {
+        generateRandomApple();
+        timerForTime.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                time += 1;
+            }
+        }, 1000);
+        resetGameTimer();
+
     }
 
     private void gameOver() {
