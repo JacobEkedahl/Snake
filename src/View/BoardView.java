@@ -67,6 +67,13 @@ public class BoardView extends Application {
             rect.setFill(Color.BLACK);
         }
         snakePos = position;
+
+        ArrayList<Position> apples = game.getApples();
+        System.out.println("Apple size: " + apples.size());
+        for (Position p : apples) {
+            Rectangle rect = rectMap.get(p.getId());
+            rect.setFill(Color.GREEN);
+        }
     }
 
     private void clearSnake() {
@@ -88,7 +95,6 @@ public class BoardView extends Application {
             rect.setId(id);
             rectMap.put(id, rect);
             boardPane.add(rect, p.getX(), p.getY());
-            System.out.println("ADDED IMAGE");
         }
     }
 

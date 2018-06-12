@@ -89,11 +89,8 @@ public class Snake {
     }
     
     public void eatApple(Position p) {
-        if (p instanceof Apple) {
-            Apple apple = (Apple) p;
             SnakePiece piece = new SnakePiece(p.getX(), p.getY());
             pieces.addFirst(piece);
-        }
     }
     
     public Position getHeadPosition() {

@@ -33,7 +33,6 @@ public class Game {
         timer = new Timer();
         apples = new ArrayList<>();
         initBoard(width, height);
-        System.out.println("snake created: " + snake);
     }
 
     public Game(int snakeSize, int speed) {
@@ -65,8 +64,10 @@ public class Game {
         ArrayList<Position> freePos = getFreePos(snake.getPosition());
         int size = freePos.size();
         int index = (int) (Math.random() * size);
-
-        apples.add((Apple) freePos.get(index));
+        Position pos = freePos.get(index);
+        Apple newApple = new Apple(pos.getX(), pos.getY());
+        
+        apples.add(newApple);
     }
 
     private void eatApple(Position p) {
@@ -79,10 +80,6 @@ public class Game {
         snakePos.remove(snake.getHeadPosition());
         ArrayList<Position> freePosBoard = getFreePos(snakePos);
 
-        System.out.println("head pos: " + snake.getHeadPosition().toString());
-        System.out.println("free pos size: " + freePosBoard.size());
-        System.out.println("before: " + board.size());
-
         if (freePosBoard.contains(snake.getHeadPosition())) {
             return false;
         }
@@ -93,7 +90,6 @@ public class Game {
         ArrayList<Position> tmpBoard = (ArrayList<Position>) board.clone();
         tmpBoard.removeAll(snakeBody);
         tmpBoard.removeAll(apples);
-        System.out.println("tmpboard size: " + tmpBoard.size());
         return tmpBoard;
     }
     
@@ -106,10 +102,15 @@ public class Game {
     }
     
     public ArrayList<Position> getApples() {
-        
+        ArrayList<Position> applesPos = new ArrayList<>();
+        for (Apple a: apples) {
+            applesPos.add(a.getPos());
+        }
+        return applesPos;
     }
 
     public void start() {
+        generateRandomApple();
         Timer timerForTime = new Timer();
         timerForTime.schedule(new TimerTask() {
             @Override
@@ -133,7 +134,6 @@ public class Game {
                 }
                 snake.move();
                 view.updateUI();
-                System.out.println("game: " + snake.toString());
             }
         }, 0, speed);
     }

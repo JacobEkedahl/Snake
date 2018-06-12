@@ -11,7 +11,9 @@ package Model;
  */
 public class Apple {
     //Har en position
-    public SnakePiece(int x, int y) {
+    private Position pos;
+    
+    public Apple(int x, int y) {
         pos = new Position(x, y);
     }
 
@@ -22,13 +24,9 @@ public class Apple {
     public void setPos(Position pos) {
         this.pos = pos;
     }
-    
+
     @Override
     public String toString() {
-        return "SnakePiece{" + "pos=" + pos + '}';
-    }
-    
-    public void moveNorth() {
-        
+        return "Apple{" + "pos=" + pos + '}';
     }
 }
