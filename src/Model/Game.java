@@ -54,7 +54,8 @@ public class Game {
 
     private boolean headColideWithApple() {
         for (int i = 0; i < apples.size(); i++) {
-            if (snake.getHeadPosition().equals(apples.get(i))) {
+            if (snake.getHeadPosition().equals(apples.get(i).getPos())) {
+                apples.remove(i);
                 return true;
             }
         }

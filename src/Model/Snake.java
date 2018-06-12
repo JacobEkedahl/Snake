@@ -19,7 +19,7 @@ public class Snake {
     private final static int EAST = 1;
     private final static int SOUTH = 2;
     private final static int WEST = 3;
-    
+
     private boolean canTurn;
     private LinkedList<SnakePiece> pieces;
     private int direction;
@@ -54,11 +54,11 @@ public class Snake {
 
         if (direction == NORTH) {
             firstY -= 1;
-        } else if ( direction == EAST) {
+        } else if (direction == EAST) {
             firstX += 1;
-        } else if ( direction == SOUTH) {
+        } else if (direction == SOUTH) {
             firstY += 1;
-        } else if ( direction == WEST) {
+        } else if (direction == WEST) {
             firstX -= 1;
         }
 
@@ -69,7 +69,7 @@ public class Snake {
         pieces.removeLast();
         canTurn = true;
     }
-    
+
     public boolean goLeft() {
         if (canTurn) {
             direction = ((direction - 1) + 4) % 4;
@@ -78,28 +78,28 @@ public class Snake {
         }
         return false;
     }
-    
+
     public boolean goRight() {
         if (canTurn) {
-            direction = (direction +1) % 4;
+            direction = (direction + 1) % 4;
             canTurn = false;
             return true;
         }
         return false;
     }
-    
+
     public void eatApple(Position p) {
-            SnakePiece piece = new SnakePiece(p.getX(), p.getY());
-            pieces.addFirst(piece);
+        SnakePiece piece = new SnakePiece(p.getX(), p.getY());
+        pieces.addFirst(piece);
     }
-    
+
     public Position getHeadPosition() {
         return pieces.getFirst().getPos();
     }
-    
+
     public ArrayList<Position> getPosition() {
         ArrayList<Position> snakePos = new ArrayList<>();
-        for (SnakePiece snakeP: pieces) {
+        for (SnakePiece snakeP : pieces) {
             snakePos.add(snakeP.getPos());
         }
         return snakePos;
@@ -109,6 +109,5 @@ public class Snake {
     public String toString() {
         return "Snake{" + "canTurn=" + canTurn + ", pieces=" + pieces + ", direction=" + direction + '}';
     }
-    
-    
+
 }
