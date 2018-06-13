@@ -173,8 +173,9 @@ public class Game {
             @Override
             public void run() {
                 time += 1;
+                System.out.println("Time: " + time);
             }
-        }, 1000);
+        },0, 1000);
     }
 
     private void gameOver() {
