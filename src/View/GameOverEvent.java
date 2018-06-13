@@ -5,10 +5,19 @@
  */
 package View;
 
+import java.util.EventObject;
+import javafx.event.Event;
+import javafx.event.EventType;
+
 /**
  *
  * @author Jacob
  */
-public class Helper {
+public class GameOverEvent extends Event{
+   
+    public GameOverEvent(EventType<? extends Event> eventType) {
+        super(eventType);
+    }
+   
     
 }

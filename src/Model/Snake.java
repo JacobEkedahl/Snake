@@ -104,6 +104,10 @@ public class Snake {
         }
         return snakePos;
     }
+    
+    public int getSize() {
+        return pieces.size();
+    }
 
     @Override
     public String toString() {

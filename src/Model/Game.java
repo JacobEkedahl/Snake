@@ -7,6 +7,8 @@ package Model;
 
 import View.BoardView;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Timer;
 import java.util.TimerTask;
 import javafx.concurrent.Task;
@@ -20,27 +22,36 @@ public class Game {
     private Snake snake;
     private int time;
     private int speed;
-    private Timer timer;
+    private int originalSpeed;
     private ArrayList<Apple> apples;
     private ArrayList<Position> board;
     private BoardView view;
+    private Timer timer = new Timer();
     private Timer timerForTime = new Timer();
 
+    private int snakeSize, width, height;
+
     public Game(int snakeSize, int width, int height, int speed, BoardView view) {
+        this.originalSpeed = speed;
+        this.snakeSize = snakeSize;
+        this.width = width;
+        this.height = height;
         this.view = view;
+        reset();
+    }
+
+    public void reset() {
         snake = new Snake(snakeSize, width / 2, height / 2);
         this.time = 0;
-        this.speed = speed;
-        timer = new Timer();
+        this.speed = originalSpeed;
         apples = new ArrayList<>();
         initBoard(width, height);
     }
 
-    public Game(int snakeSize, int speed) {
-        snake = new Snake(snakeSize, 50, 50);
-        this.speed = speed;
-        this.time = 0;
-        timer = new Timer();
+    public void start() {
+        resetTime();
+        generateRandomApple();
+        resetGameTimer();
     }
 
     private void initBoard(int width, int height) {
@@ -113,24 +124,28 @@ public class Game {
 
     public int increaseSpeed(int amount) {
         if (speed - amount <= 0) {
-            amount /= 2;
+            amount *= 0.1;
         }
         speed -= amount;
-        timer.cancel();
-        timer = new Timer();
         resetGameTimer();
         return amount;
     }
 
     public int decreaseSpeed(int amount) {
         speed += amount;
-        timer.cancel();
-        timer = new Timer();
         resetGameTimer();
-        return amount *= 2;
+        return amount *= (10 / 1);
+    }
+
+    public Result getResult() {
+        return new Result(time, snake.getSize());
     }
 
     private void resetGameTimer() {
+        if (timer != null) {
+            timer.cancel();
+            timer = new Timer();
+        }
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -139,27 +154,27 @@ public class Game {
                     generateRandomApple();
                     System.out.println("Head colided with apple");
                 } else if (headDeadColision()) {
-                    System.out.println("Game over");
-                    gameOver();
+                    view.showGameOver();
                     timer.cancel();
                     timerForTime.cancel();
                 }
-                snake.move();
                 view.updateUI();
+                snake.move();
             }
         }, 0, speed);
     }
 
-    public void start() {
-        generateRandomApple();
+    private void resetTime() {
+        if (timerForTime != null) {
+            timerForTime.cancel();
+            timerForTime = new Timer();
+        }
         timerForTime.schedule(new TimerTask() {
             @Override
             public void run() {
                 time += 1;
             }
         }, 1000);
-        resetGameTimer();
-
     }
 
     private void gameOver() {
