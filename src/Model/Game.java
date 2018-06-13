@@ -153,13 +153,16 @@ public class Game {
                     eatApple(snake.getHeadPosition());
                     generateRandomApple();
                     System.out.println("Head colided with apple");
+                    view.updateUI();
+                    snake.move();
                 } else if (headDeadColision()) {
                     view.showGameOver();
                     timer.cancel();
                     timerForTime.cancel();
+                } else {
+                    view.updateUI();
+                    snake.move();
                 }
-                view.updateUI();
-                snake.move();
             }
         }, 0, speed);
     }
@@ -175,7 +178,7 @@ public class Game {
                 time += 1;
                 System.out.println("Time: " + time);
             }
-        },0, 1000);
+        }, 0, 1000);
     }
 
     private void gameOver() {

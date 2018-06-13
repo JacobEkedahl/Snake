@@ -196,6 +196,7 @@ public class BoardView extends Application {
                 speedIncrease = game.decreaseSpeed(speedIncrease);
             } else if (event.getCode() == KeyCode.SPACE) {
                 game.reset();
+                initBoard();
                 mainPane.setCenter(boardPane);
                 game.start();
             }
