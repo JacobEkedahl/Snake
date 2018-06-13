@@ -87,7 +87,7 @@ public class BoardView extends Application {
             public void run() {
                 //show text game over, time, and size of snake
                 Result res = game.getResult();
-                timeLbl.setText("Time: " + res.getTime());
+                timeLbl.setText("Time: " + res.getTime() + " seconds");
                 scoreLbl.setText("Score: " + res.getSizeSnake());
                 mainPane.setCenter(group);
             }
@@ -167,7 +167,6 @@ public class BoardView extends Application {
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
-
     }
 
     private class GameInteraction implements EventHandler<KeyEvent> {
@@ -188,7 +187,6 @@ public class BoardView extends Application {
 
         public void userInteraction(KeyEvent event) {
             if (event.getCode() == KeyCode.S) {
-                System.out.println("Pressed s");
                 game.goLeft();
             } else if (event.getCode() == KeyCode.D) {
                 game.goRight();
