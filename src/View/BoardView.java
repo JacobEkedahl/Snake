@@ -19,7 +19,6 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -30,6 +29,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -52,12 +52,15 @@ public class BoardView extends Application {
     private static int SCREEN_HEIGHT = 400;
     private static int SCREEN_WIDTH = 400;
     private static int INCREASE_SPEED = 100;
+    private static int BORDERSIZE = 3;
 
     private int heightBox, widthBox;
+    private Rectangle frame;
     private BorderPane mainPane;
     private GridPane boardPane;
+    private Group boardGroup;
     private TilePane resultView;
-    private Group group;
+    private Group resultGroup;
     private Label timeLbl;
     private Label scoreLbl;
     private Game game;
@@ -89,7 +92,7 @@ public class BoardView extends Application {
                 Result res = game.getResult();
                 timeLbl.setText("Time: " + res.getTime() + " seconds");
                 scoreLbl.setText("Score: " + res.getSizeSnake());
-                mainPane.setCenter(group);
+                mainPane.setCenter(resultGroup);
             }
         });
     }
@@ -132,36 +135,40 @@ public class BoardView extends Application {
         scoreLbl = new Label("test");
         timeLbl = new Label("test");
         resultView.getChildren().addAll(gameOverLbl, scoreLbl, timeLbl);
-        group = new Group(resultView);
+        resultGroup = new Group(resultView);
     }
 
     private void initBoard() {
+        boardGroup = new Group();
         boardPane = new GridPane();
         ArrayList<Position> boardPosition = game.getBoard();
         board = new ArrayList<>();
 
-        for (Position p : boardPosition) {
+        for (Position p : boardPosition) {            
             String id = p.getId();
             Rectangle rect = new Rectangle(heightBox, widthBox, Color.WHITE);
             rect.setId(id);
             rectMap.put(id, rect);
             boardPane.add(rect, p.getX(), p.getY());
         }
-    }
-
-    private void resetView() {
-        clearSnake();
+        
+        System.out.println("Height: " + boardPane.getHeight());
+        
+        frame = new Rectangle(SCREEN_WIDTH + (BORDERSIZE * 2), SCREEN_HEIGHT + (BORDERSIZE * 2), Color.BLACK);
+        boardGroup.getChildren().addAll(frame, boardPane);
+        boardPane.setLayoutX(BORDERSIZE);
+        boardPane.setLayoutY(BORDERSIZE);
+        mainPane.setCenter(boardGroup);
     }
 
     private void initView(Stage primaryStage) {
         heightBox = SCREEN_HEIGHT / HEIGHT;
         widthBox = SCREEN_WIDTH / WIDTH;
         mainPane = new BorderPane();
-        initBoard();
         initResult();
-        mainPane.setCenter(boardPane);
+        initBoard();
 
-        Scene scene = new Scene(mainPane, SCREEN_WIDTH, SCREEN_HEIGHT);
+        Scene scene = new Scene(mainPane, SCREEN_WIDTH + (BORDERSIZE*2), SCREEN_HEIGHT + (BORDERSIZE*2));
         scene.setOnKeyPressed(new GameInteraction());
         primaryStage.setTitle("Snake");
         primaryStage.setScene(scene);
@@ -197,7 +204,6 @@ public class BoardView extends Application {
             } else if (event.getCode() == KeyCode.SPACE) {
                 game.reset();
                 initBoard();
-                mainPane.setCenter(boardPane);
                 game.start();
             }
         }
