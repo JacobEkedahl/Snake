@@ -79,7 +79,6 @@ public class Game {
         int index = (int) (Math.random() * size);
         Position pos = freePos.get(index);
         Apple newApple = new Apple(pos.getX(), pos.getY());
-
         apples.add(newApple);
     }
 
@@ -152,6 +151,7 @@ public class Game {
                 if (headColideWithApple()) {
                     eatApple(snake.getHeadPosition());
                     generateRandomApple();
+                    System.out.println("Apples: " + apples.toString());
                     System.out.println("Head colided with apple");
                     view.updateUI();
                     snake.move();
@@ -176,7 +176,6 @@ public class Game {
             @Override
             public void run() {
                 time += 1;
-                System.out.println("Time: " + time);
             }
         }, 0, 1000);
     }

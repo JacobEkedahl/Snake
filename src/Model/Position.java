@@ -39,7 +39,19 @@ public class Position {
     }
     
     public String getId() {
-        return "" + x + y;
+        String first, second;
+        if (x < 10) {
+            first = "0" + x;
+        } else {
+            first = "" + x;
+        }
+        
+        if (y < 10) {
+            second = "0" + y;
+        } else {
+            second = "" + y;
+        }
+        return first + second;
     }
 
     public int getX() {
@@ -59,7 +71,7 @@ public class Position {
     }
 
     public String toString() {
-        return "Piece{" + "x=" + x + ", y=" + y + '}';
+        return getId();
     }
     
     
