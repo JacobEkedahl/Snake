@@ -13,11 +13,15 @@ import java.util.Timer;
 import java.util.TimerTask;
 import javafx.concurrent.Task;
 
+//TODO reset increasespeed timer when user eats an apple
+
 /**
  *
  * @author Jacob
  */
 public class Game {
+
+    private static double INCREASE_SPEED = 0.95;
 
     private Snake snake;
     private int time;
@@ -40,6 +44,10 @@ public class Game {
         reset();
     }
 
+    /**
+     * Snake centered in screen with starting direction to left Resetting
+     * variables which changes during runtime
+     */
     public void reset() {
         snake = new Snake(snakeSize, width / 2, height / 2);
         this.time = 0;
@@ -121,23 +129,36 @@ public class Game {
         return applesPos;
     }
 
-    public int increaseSpeed(int amount) {
-        if (speed - amount <= 0) {
-            amount *= 0.1;
-        }
-        speed -= amount;
+    /**
+     * Linear increase of speed with set percentage Maximum speed is 1ms per
+     * iteration
+     *
+     * @param percentage
+     */
+    public void increaseSpeed(double percentage) {
+        speed *= percentage;
         resetGameTimer();
-        return amount;
     }
 
-    public int decreaseSpeed(int amount) {
-        speed += amount;
+    /**
+     * No set limit for how slow the snake can move Slows down same rate as its
+     * gets faster
+     *
+     * @param percentage
+     */
+    public void decreaseSpeed(double percentage) {
+        double realPercentage = 2 - percentage;
+        speed *= realPercentage;
         resetGameTimer();
-        return amount *= (10 / 1);
     }
 
+    /**
+     * When game ends the viewclass ask for the current result from game
+     * Score is number of apples eaten
+     * @return
+     */
     public Result getResult() {
-        return new Result(time, snake.getSize());
+        return new Result(time, snake.getSize() - snakeSize);
     }
 
     private void resetGameTimer() {
@@ -169,12 +190,16 @@ public class Game {
 
     private void resetTime() {
         if (timerForTime != null) {
+            speed = originalSpeed;
             timerForTime.cancel();
             timerForTime = new Timer();
         }
         timerForTime.schedule(new TimerTask() {
             @Override
             public void run() {
+                if (time % 5 == 0) {
+                    increaseSpeed(INCREASE_SPEED);
+                }
                 time += 1;
             }
         }, 0, 1000);

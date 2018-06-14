@@ -10,8 +10,13 @@ package Model;
  * @author Jacob
  */
 public class Apple {
-    //Har en position
+    /*
+    TODO:
+    Add timespan for exisstence
+    Add value which tells the snake how much to grow
+    */
     private Position pos;
+    
     
     public Apple(int x, int y) {
         pos = new Position(x, y);

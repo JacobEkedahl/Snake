@@ -24,10 +24,6 @@ public class Snake {
     private LinkedList<SnakePiece> pieces;
     private int direction;
 
-    public Snake(int size) {
-        initSnake(size, 0, 0);
-    }
-
     public Snake(int size, int centerX, int centerY) {
         initSnake(size, centerX, centerY);
     }

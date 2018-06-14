@@ -15,7 +15,7 @@ import java.util.Scanner;
 public class SnakeTest {
 
     public static void main(String[] args) {
-        Snake snake = new Snake(4);
+        Snake snake = new Snake(4,2,2);
         Scanner scan = new Scanner(System.in);
         String res = null;
         System.out.println(snake.toString());

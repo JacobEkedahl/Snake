@@ -47,11 +47,11 @@ public class BoardView extends Application {
     private static int SIZE_SNAKE = 4;
     private static int WIDTH = 50;
     private static int HEIGHT = 50;
-    private static int SPEED = 200;
+    private static int SPEED = 150;
     private static int MAGNIFIER = 5;
     private static int SCREEN_HEIGHT = 400;
     private static int SCREEN_WIDTH = 400;
-    private static int INCREASE_SPEED = 100;
+    private static double INCREASE_SPEED = 0.95;
     private static int BORDERSIZE = 3;
 
     private int heightBox, widthBox;
@@ -67,7 +67,6 @@ public class BoardView extends Application {
     private ArrayList<ImageView> board;
     private HashMap<String, Rectangle> rectMap = new HashMap<String, Rectangle>();
     private ArrayList<Position> snakePos;
-    private int speedIncrease = INCREASE_SPEED;
 
     Controller controller;
 
@@ -198,9 +197,9 @@ public class BoardView extends Application {
             } else if (event.getCode() == KeyCode.D) {
                 game.goRight();
             } else if (event.getCode() == KeyCode.UP) {
-                speedIncrease = game.increaseSpeed(speedIncrease);
+                game.increaseSpeed(INCREASE_SPEED);
             } else if (event.getCode() == KeyCode.DOWN) {
-                speedIncrease = game.decreaseSpeed(speedIncrease);
+                game.decreaseSpeed(INCREASE_SPEED);
             } else if (event.getCode() == KeyCode.SPACE) {
                 game.reset();
                 initBoard();
