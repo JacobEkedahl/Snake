@@ -8,6 +8,7 @@ package View;
 import Model.Game;
 import Model.Position;
 import Model.Result;
+import Model.WormHole;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,12 +47,13 @@ public class BoardView extends Application {
 
     private static int SIZE_SNAKE = 5;
     private static int WIDTH = 40;
-    private static int HEIGHT = 50;
+    private static int HEIGHT = 40;
     private static int SPEED = 150;
+    private static int SCREEN_WIDTH = 600;
     private static int SCREEN_HEIGHT = 800;
-    private static int SCREEN_WIDTH = 640;
     private static double INCREASE_SPEED = 0.95;
     private static int BORDERSIZE = 3;
+    private static int INTERVAL_WORMHOLE = 15;
 
     private int heightBox, widthBox;
     private Rectangle frame;
@@ -78,7 +80,7 @@ public class BoardView extends Application {
     }
 
     public void initGame() {
-        game = new Game(SIZE_SNAKE, WIDTH, HEIGHT, SPEED, INCREASE_SPEED, this);
+        game = new Game(SIZE_SNAKE, WIDTH, HEIGHT, SPEED, INCREASE_SPEED, INTERVAL_WORMHOLE, this);
         snakePos = game.getSnakePosition();
     }
 
@@ -99,6 +101,7 @@ public class BoardView extends Application {
         clearSnake();
         showSnake();
         showApples();
+        showWormholes();
     }
 
     private void showSnake() {
@@ -108,6 +111,27 @@ public class BoardView extends Application {
             rect.setFill(Color.BLACK);
         }
         snakePos = position;
+    }
+
+    private void clearWormholes() {
+        for (Position p : wormholes) {
+            Rectangle rect = rectMap.get(p.getId());
+            rect.setFill(Color.WHITE);
+        }
+    }
+    
+    private ArrayList<Position> wormholes = new ArrayList<>();
+    private void showWormholes() {
+        ArrayList<Position> tmpWormholes = game.getWormholes();
+        if (!tmpWormholes.equals(wormholes)) {
+            clearWormholes();
+        }
+    
+        wormholes = tmpWormholes;
+        for (Position p : wormholes) {
+            Rectangle rect = rectMap.get(p.getId());
+            rect.setFill(Color.BLUE);
+        }
     }
 
     private void showApples() {
@@ -142,17 +166,17 @@ public class BoardView extends Application {
         ArrayList<Position> boardPosition = game.getBoard();
         board = new ArrayList<>();
 
-        for (Position p : boardPosition) {            
+        for (Position p : boardPosition) {
             String id = p.getId();
-            Rectangle rect = new Rectangle(heightBox, widthBox, Color.WHITE);
+            Rectangle rect = new Rectangle(widthBox, heightBox, Color.WHITE);
             rect.setId(id);
             rectMap.put(id, rect);
             boardPane.add(rect, p.getX(), p.getY());
         }
-        
+
         System.out.println("Height: " + boardPane.getHeight());
-        
-        frame = new Rectangle(SCREEN_WIDTH + (BORDERSIZE * 2), SCREEN_HEIGHT + (BORDERSIZE * 2), Color.BLACK);
+
+        frame = new Rectangle((widthBox * WIDTH) + (BORDERSIZE * 2), heightBox * HEIGHT + (BORDERSIZE * 2), Color.BLACK);
         boardGroup.getChildren().addAll(frame, boardPane);
         boardPane.setLayoutX(BORDERSIZE);
         boardPane.setLayoutY(BORDERSIZE);
@@ -162,16 +186,19 @@ public class BoardView extends Application {
     private void initView(Stage primaryStage) {
         heightBox = SCREEN_HEIGHT / HEIGHT;
         widthBox = SCREEN_WIDTH / WIDTH;
+        System.out.println("width box: " + widthBox + ", width: " + WIDTH);
+        System.out.println("height box: " + heightBox + ", height: " + HEIGHT);
         mainPane = new BorderPane();
         initResult();
         initBoard();
 
-        Scene scene = new Scene(mainPane, SCREEN_WIDTH + (BORDERSIZE*2), SCREEN_HEIGHT + (BORDERSIZE*2));
+        Scene scene = new Scene(mainPane, SCREEN_WIDTH + (BORDERSIZE * 2), SCREEN_HEIGHT + (BORDERSIZE * 2));
         scene.setOnKeyPressed(new GameInteraction());
         primaryStage.setTitle("Snake");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
+
     }
 
     private class GameInteraction implements EventHandler<KeyEvent> {

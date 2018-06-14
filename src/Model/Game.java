@@ -14,12 +14,13 @@ import java.util.TimerTask;
 import javafx.concurrent.Task;
 
 //TODO reset increasespeed timer when user eats an apple
-
 /**
  *
  * @author Jacob
  */
 public class Game {
+
+    private int intervalWormhole;
     private double percentageIncrease;
     private Snake snake;
     private int time;
@@ -34,7 +35,8 @@ public class Game {
 
     private int snakeSize, width, height;
 
-    public Game(int snakeSize, int width, int height, int speed, double percentageIncrease, BoardView view) {
+    public Game(int snakeSize, int width, int height, int speed, double percentageIncrease, int intervalWormhole, BoardView view) {
+        this.intervalWormhole = intervalWormhole;
         this.percentageIncrease = percentageIncrease;
         this.originalSpeed = speed;
         this.snakeSize = snakeSize;
@@ -54,6 +56,7 @@ public class Game {
         this.time = 0;
         this.speed = originalSpeed;
         apples = new ArrayList<>();
+        wormholes = new ArrayList<>();
         initBoard(width, height);
     }
 
@@ -81,16 +84,26 @@ public class Game {
         }
         return false;
     }
-    
-    private void generateRandomWormhole() {
-        
-    }
 
-    private void generateRandomApple() {
+    private Position getSingleFreePos() {
         ArrayList<Position> freePos = getFreePos(snake.getPosition());
         int size = freePos.size();
         int index = (int) (Math.random() * size);
-        Position pos = freePos.get(index);
+        return freePos.get(index);
+    }
+
+    private void generateRandomWormhole() {
+        Position entry = getSingleFreePos();
+        Position entry2 = getSingleFreePos();
+        while (entry.equals(entry2)) {
+            entry2 = getSingleFreePos();
+        }
+        WormHole newWormhole = new WormHole(entry, entry2);
+        wormholes.add(newWormhole);
+    }
+
+    private void generateRandomApple() {
+        Position pos = getSingleFreePos();
         Apple newApple = new Apple(pos.getX(), pos.getY());
         apples.add(newApple);
     }
@@ -101,20 +114,28 @@ public class Game {
     }
 
     private boolean headDeadColision() {
-        ArrayList<Position> snakePos = snake.getPosition();
-        snakePos.remove(snake.getHeadPosition());
-        ArrayList<Position> freePosBoard = getFreePos(snakePos);
-
+        ArrayList<Position> freePosBoard = safePositions();
         if (freePosBoard.contains(snake.getHeadPosition())) {
             return false;
         }
         return true;
     }
 
+    private ArrayList<Position> safePositions() {
+        ArrayList<Position> safePos = (ArrayList<Position>) board.clone();
+        ArrayList<Position> snakePos = snake.getPosition();
+        snakePos.remove(snake.getHeadPosition());
+        safePos.removeAll(snakePos);
+        return safePos;
+    }
+
     private ArrayList<Position> getFreePos(ArrayList<Position> snakeBody) {
         ArrayList<Position> tmpBoard = (ArrayList<Position>) board.clone();
         tmpBoard.removeAll(snakeBody);
         tmpBoard.removeAll(apples);
+        for (WormHole hole : wormholes) {
+            tmpBoard.removeAll(hole.posOfHoles());
+        }
         return tmpBoard;
     }
 
@@ -158,12 +179,35 @@ public class Game {
     }
 
     /**
-     * When game ends the viewclass ask for the current result from game
-     * Score is number of apples eaten
+     * When game ends the viewclass ask for the current result from game Score
+     * is number of apples eaten
+     *
      * @return
      */
     public Result getResult() {
         return new Result(time, snake.getSize() - snakeSize);
+    }
+
+    public ArrayList<Position> getWormholes() {
+        ArrayList<Position> wormholePos = new ArrayList<>();
+        for (WormHole hole : wormholes) {
+            for (Position entries : hole.posOfHoles()) {
+                wormholePos.add(entries);
+            }
+        }
+        return wormholePos;
+    }
+
+    private void headCollisionWormhole() {
+        for (WormHole hole : wormholes) {
+            if (hole.isIsInside()) {
+                hole.redirect();
+                System.out.println("Snakepos redir: " + snake.toString());
+              //  System.out.println("Redirecting..");
+            } else {
+                hole.testCollisionWithWormhole(snake);
+            }
+        }
     }
 
     private void resetGameTimer() {
@@ -189,6 +233,7 @@ public class Game {
                     view.updateUI();
                     snake.move();
                 }
+                headCollisionWormhole();
             }
         }, 0, speed);
     }
@@ -204,6 +249,11 @@ public class Game {
             public void run() {
                 if (time % 5 == 0) {
                     increaseSpeed(percentageIncrease);
+                }
+                
+                if (time % intervalWormhole == 0) {
+                    wormholes.clear();
+                    generateRandomWormhole();
                 }
                 time += 1;
             }

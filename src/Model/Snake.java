@@ -15,10 +15,10 @@ import java.util.LinkedList;
  */
 public class Snake {
 
-    private final static int NORTH = 0;
-    private final static int EAST = 1;
-    private final static int SOUTH = 2;
-    private final static int WEST = 3;
+    public final static int NORTH = 0;
+    public final static int EAST = 1;
+    public final static int SOUTH = 2;
+    public final static int WEST = 3;
 
     private boolean canTurn;
     private LinkedList<SnakePiece> pieces;
@@ -38,6 +38,14 @@ public class Snake {
 
         direction = WEST;
         canTurn = true;
+    }
+
+    public int getDirection() {
+        return direction;
+    }
+
+    public void setDirection(int direction) {
+        this.direction = direction;
     }
 
     //move
@@ -87,6 +95,13 @@ public class Snake {
     public void eatApple(Position p) {
         SnakePiece piece = new SnakePiece(p.getX(), p.getY());
         pieces.addFirst(piece);
+    }
+    
+    public SnakePiece getSnakePiece(int index) {
+        if (index < 0 || index == pieces.size()) {
+            return null;
+        }
+        return pieces.get(index);
     }
 
     public Position getHeadPosition() {
