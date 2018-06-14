@@ -30,6 +30,11 @@ public class WormHole {
         isInside = false;
         directionOfSnake = 0;
     }
+    
+    public void clearHoles() {
+        entry.setPos(new Position(-1, -1));
+        entry2.setPos(new Position(-1, -1));
+    }
 
     public boolean testCollisionWithWormhole(Snake snake) {
         if (snake.getHeadPosition().equals(entry.getPos())) {
@@ -114,19 +119,19 @@ public class WormHole {
         }
 
         public Position up() {
-            return new Position(pos.getX(), pos.getY() - 1);
+            return new Position(pos.getX(), pos.getY());
         }
 
         public Position right() {
-            return new Position(pos.getX() + 1, pos.getY());
+            return new Position(pos.getX(), pos.getY());
         }
 
         public Position down() {
-            return new Position(pos.getX(), pos.getY() + 1);
+            return new Position(pos.getX(), pos.getY());
         }
 
         public Position left() {
-            return new Position(pos.getX() - 1, pos.getY());
+            return new Position(pos.getX(), pos.getY());
         }
     }
 }

@@ -191,21 +191,31 @@ public class Game {
     public ArrayList<Position> getWormholes() {
         ArrayList<Position> wormholePos = new ArrayList<>();
         for (WormHole hole : wormholes) {
-            for (Position entries : hole.posOfHoles()) {
-                wormholePos.add(entries);
+            if (!hole.isIsInside()) {
+                for (Position entries : hole.posOfHoles()) {
+                    wormholePos.add(entries);
+                }
             }
         }
         return wormholePos;
     }
 
+    private ArrayList<WormHole> enteredWormHoles = new ArrayList<>();
+
     private void headCollisionWormhole() {
-        for (WormHole hole : wormholes) {
-            if (hole.isIsInside()) {
-                hole.redirect();
-                System.out.println("Snakepos redir: " + snake.toString());
-              //  System.out.println("Redirecting..");
+        for (int i = wormholes.size() - 1; i >= 0; i--) {
+            if (wormholes.get(i).isIsInside()) {
+                if (!enteredWormHoles.contains(wormholes.get(i))) {
+                    enteredWormHoles.add(wormholes.get(i));
+                }
+                wormholes.get(i).redirect();
             } else {
-                hole.testCollisionWithWormhole(snake);
+                wormholes.get(i).testCollisionWithWormhole(snake);
+                if (!enteredWormHoles.isEmpty()) {
+                    wormholes.removeAll(enteredWormHoles);
+                    enteredWormHoles.clear();
+                    generateRandomWormhole();
+                }
             }
         }
     }
@@ -250,7 +260,7 @@ public class Game {
                 if (time % 5 == 0) {
                     increaseSpeed(percentageIncrease);
                 }
-                
+
                 if (time % intervalWormhole == 0) {
                     wormholes.clear();
                     generateRandomWormhole();

@@ -45,7 +45,7 @@ import javafx.stage.Stage;
  */
 public class BoardView extends Application {
 
-    private static int SIZE_SNAKE = 5;
+    private static int SIZE_SNAKE = 15;
     private static int WIDTH = 40;
     private static int HEIGHT = 40;
     private static int SPEED = 150;
