@@ -20,13 +20,12 @@ import javafx.concurrent.Task;
  * @author Jacob
  */
 public class Game {
-
-    private static double INCREASE_SPEED = 0.95;
-
+    private double percentageIncrease;
     private Snake snake;
     private int time;
     private int speed;
     private int originalSpeed;
+    private ArrayList<WormHole> wormholes;
     private ArrayList<Apple> apples;
     private ArrayList<Position> board;
     private BoardView view;
@@ -35,7 +34,8 @@ public class Game {
 
     private int snakeSize, width, height;
 
-    public Game(int snakeSize, int width, int height, int speed, BoardView view) {
+    public Game(int snakeSize, int width, int height, int speed, double percentageIncrease, BoardView view) {
+        this.percentageIncrease = percentageIncrease;
         this.originalSpeed = speed;
         this.snakeSize = snakeSize;
         this.width = width;
@@ -49,6 +49,7 @@ public class Game {
      * variables which changes during runtime
      */
     public void reset() {
+        wormholes = new ArrayList<>();
         snake = new Snake(snakeSize, width / 2, height / 2);
         this.time = 0;
         this.speed = originalSpeed;
@@ -79,6 +80,10 @@ public class Game {
             }
         }
         return false;
+    }
+    
+    private void generateRandomWormhole() {
+        
     }
 
     private void generateRandomApple() {
@@ -198,7 +203,7 @@ public class Game {
             @Override
             public void run() {
                 if (time % 5 == 0) {
-                    increaseSpeed(INCREASE_SPEED);
+                    increaseSpeed(percentageIncrease);
                 }
                 time += 1;
             }

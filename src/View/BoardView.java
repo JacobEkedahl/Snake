@@ -44,13 +44,12 @@ import javafx.stage.Stage;
  */
 public class BoardView extends Application {
 
-    private static int SIZE_SNAKE = 4;
-    private static int WIDTH = 50;
+    private static int SIZE_SNAKE = 5;
+    private static int WIDTH = 40;
     private static int HEIGHT = 50;
     private static int SPEED = 150;
-    private static int MAGNIFIER = 5;
-    private static int SCREEN_HEIGHT = 400;
-    private static int SCREEN_WIDTH = 400;
+    private static int SCREEN_HEIGHT = 800;
+    private static int SCREEN_WIDTH = 640;
     private static double INCREASE_SPEED = 0.95;
     private static int BORDERSIZE = 3;
 
@@ -79,7 +78,7 @@ public class BoardView extends Application {
     }
 
     public void initGame() {
-        game = new Game(SIZE_SNAKE, WIDTH, HEIGHT, SPEED, this);
+        game = new Game(SIZE_SNAKE, WIDTH, HEIGHT, SPEED, INCREASE_SPEED, this);
         snakePos = game.getSnakePosition();
     }
 
