@@ -57,6 +57,7 @@ public class BoardView extends Application {
 
     private int heightBox, widthBox;
     private Rectangle frame;
+    private GridPane infoPane;
     private BorderPane mainPane;
     private GridPane boardPane;
     private Group boardGroup;
@@ -101,6 +102,7 @@ public class BoardView extends Application {
         clearSnake();
         showSnake();
         showApples();
+        clearWormholes();
         showWormholes();
     }
 
@@ -119,14 +121,15 @@ public class BoardView extends Application {
             rect.setFill(Color.WHITE);
         }
     }
-    
+
     private ArrayList<Position> wormholes = new ArrayList<>();
+
     private void showWormholes() {
         ArrayList<Position> tmpWormholes = game.getWormholes();
         if (!tmpWormholes.equals(wormholes)) {
             clearWormholes();
         }
-    
+
         wormholes = tmpWormholes;
         for (Position p : wormholes) {
             Rectangle rect = rectMap.get(p.getId());

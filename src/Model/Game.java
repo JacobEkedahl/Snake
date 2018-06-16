@@ -20,6 +20,9 @@ import javafx.concurrent.Task;
  */
 public class Game {
 
+    private static boolean START = true;
+    private static boolean DONT_START = false;
+
     private int intervalWormhole;
     private double percentageIncrease;
     private Snake snake;
@@ -30,8 +33,11 @@ public class Game {
     private ArrayList<Apple> apples;
     private ArrayList<Position> board;
     private BoardView view;
-    private Timer timer = new Timer();
-    private Timer timerForTime = new Timer();
+
+    private static Timer timer;
+    private TimerTask gameTask;
+    private static Timer timerForTime;
+    private TimerTask timeTask;
 
     private int snakeSize, width, height;
 
@@ -63,7 +69,7 @@ public class Game {
     public void start() {
         resetTime();
         generateRandomApple();
-        resetGameTimer();
+        resetTimerGame(START);
     }
 
     private void initBoard(int width, int height) {
@@ -163,7 +169,7 @@ public class Game {
      */
     public void increaseSpeed(double percentage) {
         speed *= percentage;
-        resetGameTimer();
+        resetTimerGame(START);
     }
 
     /**
@@ -175,7 +181,7 @@ public class Game {
     public void decreaseSpeed(double percentage) {
         double realPercentage = 2 - percentage;
         speed *= realPercentage;
-        resetGameTimer();
+        resetTimerGame(START);
     }
 
     /**
@@ -220,14 +226,11 @@ public class Game {
         }
     }
 
-    private void resetGameTimer() {
-        if (timer != null) {
-            timer.cancel();
-            timer = new Timer();
-        }
-        timer.schedule(new TimerTask() {
+    private void setupTaskGame() {
+        gameTask = new TimerTask() {
             @Override
             public void run() {
+                System.out.println("Speed: " + speed);
                 if (headColideWithApple()) {
                     eatApple(snake.getHeadPosition());
                     generateRandomApple();
@@ -236,27 +239,55 @@ public class Game {
                     view.updateUI();
                     snake.move();
                 } else if (headDeadColision()) {
-                    view.showGameOver();
-                    timer.cancel();
-                    timerForTime.cancel();
+                    gameOver();
                 } else {
                     view.updateUI();
                     snake.move();
                 }
                 headCollisionWormhole();
             }
-        }, 0, speed);
+        };
     }
 
-    private void resetTime() {
-        if (timerForTime != null) {
-            speed = originalSpeed;
-            timerForTime.cancel();
-            timerForTime = new Timer();
+    private void resetTimerGame(boolean start) {
+        if (timer != null) {
+            timer.cancel();
         }
-        timerForTime.schedule(new TimerTask() {
+        timer = new Timer();
+
+        if (gameTask != null) {
+            gameTask.cancel();
+        }
+        if (start) {
+            setupTaskGame();
+            timer.schedule(gameTask, 0, speed);
+        }
+    }
+
+    private void resetTimerTime() {
+        if (timerForTime != null) {
+            timerForTime.cancel();
+        }
+        timerForTime = new Timer();
+
+        if (timeTask != null) {
+            timeTask.cancel();
+        }
+
+        setupTimeTask();
+    }
+
+    private void gameOver() {
+        resetTimerGame(DONT_START);
+        resetTimerTime();
+        view.showGameOver();
+    }
+
+    private void setupTimeTask() {
+        timeTask = new TimerTask() {
             @Override
             public void run() {
+                System.out.println("Time: " + time);
                 if (time % 5 == 0) {
                     increaseSpeed(percentageIncrease);
                 }
@@ -267,11 +298,13 @@ public class Game {
                 }
                 time += 1;
             }
-        }, 0, 1000);
+        };
     }
 
-    private void gameOver() {
-        System.out.println("Time: " + time);
+    private void resetTime() {
+        resetTimerTime();
+        speed = originalSpeed;
+        timerForTime.schedule(timeTask, 0, 1000);
     }
 
     public boolean goLeft() {
