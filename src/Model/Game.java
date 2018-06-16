@@ -49,14 +49,13 @@ public class Game {
         this.width = width;
         this.height = height;
         this.view = view;
-        reset();
     }
 
     /**
      * Snake centered in screen with starting direction to left Resetting
      * variables which changes during runtime
      */
-    public void reset() {
+    public void init() {
         wormholes = new ArrayList<>();
         snake = new Snake(snakeSize, width / 2, height / 2);
         this.time = 0;
@@ -249,7 +248,7 @@ public class Game {
         };
     }
 
-    private void resetTimerGame(boolean start) {
+    private synchronized void resetTimerGame(boolean start) {
         if (timer != null) {
             timer.cancel();
         }
@@ -264,7 +263,7 @@ public class Game {
         }
     }
 
-    private void resetTimerTime() {
+    private synchronized void resetTimerTime() {
         if (timerForTime != null) {
             timerForTime.cancel();
         }

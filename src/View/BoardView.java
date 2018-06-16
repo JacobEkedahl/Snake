@@ -57,7 +57,8 @@ public class BoardView extends Application {
 
     private int heightBox, widthBox;
     private Rectangle frame;
-    private GridPane infoPane;
+    private Group startGroup;
+    private GridPane startPane;
     private BorderPane mainPane;
     private GridPane boardPane;
     private Group boardGroup;
@@ -74,14 +75,14 @@ public class BoardView extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        initGame();
+        setupGame();
         controller = new Controller(game);
         initView(primaryStage);
-        game.start();
     }
 
-    public void initGame() {
+    public void setupGame() {
         game = new Game(SIZE_SNAKE, WIDTH, HEIGHT, SPEED, INCREASE_SPEED, INTERVAL_WORMHOLE, this);
+        game.init();
         snakePos = game.getSnakePosition();
     }
 
@@ -153,6 +154,27 @@ public class BoardView extends Application {
         }
     }
 
+    private static final String controlLeft = "Left: S";
+    private static final String controlRight = "Right: D";
+    private static final String controlRestart = "Restart game: SPACEBAR";
+    private static final String infoWormhole = "Wormholes";
+    private static final String infoApple = "Apple";
+    
+    private void initStart() {
+        startPane = new GridPane();
+        ArrayList<Label>infoLabels = new ArrayList<>();
+        infoLabels.add(new Label(controlLeft));
+        infoLabels.add(new Label(controlRight));
+        infoLabels.add(new Label(controlRestart));
+        infoLabels.add(new Label(infoWormhole));
+        infoLabels.add(new Label(infoApple));
+        
+        for (int row = 1; row <= infoLabels.size(); row++) {
+            startPane.add(infoLabels.get(row-1), 1, row);
+        }
+        startGroup = new Group(startPane);
+    }
+
     private void initResult() {
         resultView = new TilePane(Orientation.VERTICAL);
         resultView.setPrefRows(3);
@@ -194,6 +216,8 @@ public class BoardView extends Application {
         mainPane = new BorderPane();
         initResult();
         initBoard();
+        initStart();
+        mainPane.setCenter(startGroup);
 
         Scene scene = new Scene(mainPane, SCREEN_WIDTH + (BORDERSIZE * 2), SCREEN_HEIGHT + (BORDERSIZE * 2));
         scene.setOnKeyPressed(new GameInteraction());
@@ -201,7 +225,6 @@ public class BoardView extends Application {
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
-
     }
 
     private class GameInteraction implements EventHandler<KeyEvent> {
@@ -230,7 +253,7 @@ public class BoardView extends Application {
             } else if (event.getCode() == KeyCode.DOWN) {
                 game.decreaseSpeed(INCREASE_SPEED);
             } else if (event.getCode() == KeyCode.SPACE) {
-                game.reset();
+                game.init();
                 initBoard();
                 game.start();
             }

@@ -108,7 +108,7 @@ public class Snake {
         return pieces.getFirst().getPos();
     }
 
-    public synchronized ArrayList<Position> getPosition() {
+    public ArrayList<Position> getPosition() {
         ArrayList<Position> snakePos = new ArrayList<>();
         for (SnakePiece snakeP : pieces) {
             snakePos.add(snakeP.getPos());
