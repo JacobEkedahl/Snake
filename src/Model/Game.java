@@ -41,9 +41,13 @@ public class Game {
     private TimerTask timeTask;
 
     private int snakeSize, width, height;
+    private int wormholeInterval;
+    private int maxWormholes;
 
     public Game(int snakeSize, int width, int height, int speed, double percentageIncrease,
-            int intervalWormhole, boolean randomWormhole, BoardView view) {
+            int intervalWormhole, int wormholeInterval, boolean randomWormhole, int maxWormholes, BoardView view) {
+        this.maxWormholes = maxWormholes;
+        this.wormholeInterval = wormholeInterval;
         this.randomWormhole = randomWormhole;
         this.intervalWormhole = intervalWormhole;
         this.percentageIncrease = percentageIncrease;
@@ -71,7 +75,6 @@ public class Game {
     public void start() {
         resetTime();
         generateRandomApple();
-        generateRandomWormhole();
         resetTimerGame(START);
     }
 
@@ -107,23 +110,27 @@ public class Game {
     private Position tmpEntry, tmpEntry2;
 
     public void generateFixedWormhole(Position clickedPos) {
-        if (tmpEntry == null) {
-            tmpEntry = clickedPos;
-        } else {
-            tmpEntry2 = clickedPos;
-            wormholes.add(new Wormhole(tmpEntry, tmpEntry2, intervalWormhole));
-            tmpEntry = null;
+        if (wormholes.size() < maxWormholes) {
+            if (tmpEntry == null) {
+                tmpEntry = clickedPos;
+            } else {
+                tmpEntry2 = clickedPos;
+                wormholes.add(new Wormhole(tmpEntry, tmpEntry2, intervalWormhole));
+                tmpEntry = null;
+            }
         }
     }
 
-    private void generateRandomWormhole() {
-        Position entry = getSingleFreePos();
-        Position entry2 = getSingleFreePos();
-        while (entry.equals(entry2)) {
-            entry2 = getSingleFreePos();
+    private synchronized void generateRandomWormhole() {
+        if (wormholes.size() < maxWormholes) {
+            Position entry = getSingleFreePos();
+            Position entry2 = getSingleFreePos();
+            while (entry.equals(entry2)) {
+                entry2 = getSingleFreePos();
+            }
+            Wormhole newWormhole = new Wormhole(entry, entry2, intervalWormhole);
+            wormholes.add(newWormhole);
         }
-        Wormhole newWormhole = new Wormhole(entry, entry2, intervalWormhole);
-        wormholes.add(newWormhole);
     }
 
     private void generateRandomApple() {
@@ -291,6 +298,7 @@ public class Game {
     private void gameOver() {
         resetTimerGame(DONT_START);
         resetTimerTime();
+        wormholes.clear();
         view.showGameOver();
     }
 
@@ -300,6 +308,12 @@ public class Game {
             public void run() {
                 if (time % 5 == 0) {
                     increaseSpeed(percentageIncrease);
+                }
+
+                if (randomWormhole) {
+                    if (time % wormholeInterval == 0) {
+                        generateRandomWormhole();
+                    }
                 }
 
                 for (int i = wormholes.size() - 1; i >= 0; i--) {
