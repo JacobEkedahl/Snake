@@ -71,7 +71,7 @@ public class Position {
     }
 
     public String toString() {
-        return getId();
+        return getId() + ", X: " + x + ", Y: " + y;
     }
     
     

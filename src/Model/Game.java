@@ -23,13 +23,14 @@ public class Game {
     private static boolean START = true;
     private static boolean DONT_START = false;
 
+    private boolean randomWormhole;
     private int intervalWormhole;
     private double percentageIncrease;
     private Snake snake;
     private int time;
     private int speed;
     private int originalSpeed;
-    private ArrayList<WormHole> wormholes;
+    private ArrayList<Wormhole> wormholes;
     private ArrayList<Apple> apples;
     private ArrayList<Position> board;
     private BoardView view;
@@ -41,7 +42,9 @@ public class Game {
 
     private int snakeSize, width, height;
 
-    public Game(int snakeSize, int width, int height, int speed, double percentageIncrease, int intervalWormhole, BoardView view) {
+    public Game(int snakeSize, int width, int height, int speed, double percentageIncrease,
+            int intervalWormhole, boolean randomWormhole, BoardView view) {
+        this.randomWormhole = randomWormhole;
         this.intervalWormhole = intervalWormhole;
         this.percentageIncrease = percentageIncrease;
         this.originalSpeed = speed;
@@ -68,6 +71,7 @@ public class Game {
     public void start() {
         resetTime();
         generateRandomApple();
+        generateRandomWormhole();
         resetTimerGame(START);
     }
 
@@ -97,13 +101,25 @@ public class Game {
         return freePos.get(index);
     }
 
+    private Position tmpEntry, tmpEntry2;
+
+    public void generateFixedWormhole(Position clickedPos) {
+        if (tmpEntry == null) {
+            tmpEntry = clickedPos;
+        } else {
+            tmpEntry2 = clickedPos;
+            wormholes.add(new Wormhole(tmpEntry, tmpEntry2, intervalWormhole));
+            tmpEntry = null;
+        }
+    }
+
     private void generateRandomWormhole() {
         Position entry = getSingleFreePos();
         Position entry2 = getSingleFreePos();
         while (entry.equals(entry2)) {
             entry2 = getSingleFreePos();
         }
-        WormHole newWormhole = new WormHole(entry, entry2);
+        Wormhole newWormhole = new Wormhole(entry, entry2, intervalWormhole);
         wormholes.add(newWormhole);
     }
 
@@ -138,7 +154,7 @@ public class Game {
         ArrayList<Position> tmpBoard = (ArrayList<Position>) board.clone();
         tmpBoard.removeAll(snakeBody);
         tmpBoard.removeAll(apples);
-        for (WormHole hole : wormholes) {
+        for (Wormhole hole : wormholes) {
             tmpBoard.removeAll(hole.posOfHoles());
         }
         return tmpBoard;
@@ -195,7 +211,7 @@ public class Game {
 
     public ArrayList<Position> getWormholes() {
         ArrayList<Position> wormholePos = new ArrayList<>();
-        for (WormHole hole : wormholes) {
+        for (Wormhole hole : wormholes) {
             if (!hole.isIsInside()) {
                 for (Position entries : hole.posOfHoles()) {
                     wormholePos.add(entries);
@@ -205,7 +221,7 @@ public class Game {
         return wormholePos;
     }
 
-    private ArrayList<WormHole> enteredWormHoles = new ArrayList<>();
+    private ArrayList<Wormhole> enteredWormHoles = new ArrayList<>();
 
     private void headCollisionWormhole() {
         for (int i = wormholes.size() - 1; i >= 0; i--) {
@@ -219,7 +235,9 @@ public class Game {
                 if (!enteredWormHoles.isEmpty()) {
                     wormholes.removeAll(enteredWormHoles);
                     enteredWormHoles.clear();
-                    generateRandomWormhole();
+                    if (randomWormhole) {
+                        generateRandomWormhole();
+                    }
                 }
             }
         }
@@ -229,7 +247,6 @@ public class Game {
         gameTask = new TimerTask() {
             @Override
             public void run() {
-                System.out.println("Speed: " + speed);
                 if (headColideWithApple()) {
                     eatApple(snake.getHeadPosition());
                     generateRandomApple();
@@ -286,14 +303,18 @@ public class Game {
         timeTask = new TimerTask() {
             @Override
             public void run() {
-                System.out.println("Time: " + time);
                 if (time % 5 == 0) {
                     increaseSpeed(percentageIncrease);
                 }
 
-                if (time % intervalWormhole == 0) {
-                    wormholes.clear();
-                    generateRandomWormhole();
+                for (int i = wormholes.size() - 1; i >= 0; i--) {
+                    //tries to negate time to live down to zero, if wormhole is dead remove it
+                    if (!wormholes.get(i).negateToZero()) {
+                        wormholes.remove(i);
+                        if (randomWormhole) {
+                            generateRandomWormhole();
+                        }
+                    }
                 }
                 time += 1;
             }

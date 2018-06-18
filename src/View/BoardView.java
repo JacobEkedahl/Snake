@@ -5,10 +5,11 @@
  */
 package View;
 
+import Model.Converter;
 import Model.Game;
 import Model.Position;
 import Model.Result;
-import Model.WormHole;
+import Model.Wormhole;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -53,7 +55,9 @@ public class BoardView extends Application {
     private static int SCREEN_HEIGHT = 800;
     private static double INCREASE_SPEED = 0.95;
     private static int BORDERSIZE = 3;
-    private static int INTERVAL_WORMHOLE = 15;
+    private static int WORMHOLE_TIMETOLIVE = 10;
+    private static boolean RANDOM_WORMHOLES = true;
+    private static boolean FIXED_WORMHOLES = false;
 
     private int heightBox, widthBox;
     private Rectangle frame;
@@ -70,6 +74,8 @@ public class BoardView extends Application {
     private ArrayList<ImageView> board;
     private HashMap<String, Rectangle> rectMap = new HashMap<String, Rectangle>();
     private ArrayList<Position> snakePos;
+    
+    private Converter converter;
 
     Controller controller;
 
@@ -81,7 +87,8 @@ public class BoardView extends Application {
     }
 
     public void setupGame() {
-        game = new Game(SIZE_SNAKE, WIDTH, HEIGHT, SPEED, INCREASE_SPEED, INTERVAL_WORMHOLE, this);
+        game = new Game(SIZE_SNAKE, WIDTH, HEIGHT, SPEED, INCREASE_SPEED, WORMHOLE_TIMETOLIVE, RANDOM_WORMHOLES,this);
+        converter = new Converter(SCREEN_WIDTH, SCREEN_HEIGHT, WIDTH, HEIGHT);
         game.init();
         snakePos = game.getSnakePosition();
     }
@@ -209,10 +216,8 @@ public class BoardView extends Application {
     }
 
     private void initView(Stage primaryStage) {
-        heightBox = SCREEN_HEIGHT / HEIGHT;
-        widthBox = SCREEN_WIDTH / WIDTH;
-        System.out.println("width box: " + widthBox + ", width: " + WIDTH);
-        System.out.println("height box: " + heightBox + ", height: " + HEIGHT);
+        heightBox = converter.getHeightBox();
+        widthBox = converter.getWidthBox();
         mainPane = new BorderPane();
         initResult();
         initBoard();
@@ -221,6 +226,9 @@ public class BoardView extends Application {
 
         Scene scene = new Scene(mainPane, SCREEN_WIDTH + (BORDERSIZE * 2), SCREEN_HEIGHT + (BORDERSIZE * 2));
         scene.setOnKeyPressed(new GameInteraction());
+        if (FIXED_WORMHOLES) {
+            scene.setOnMouseClicked(new ClickInteraction());
+        }
         primaryStage.setTitle("Snake");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
@@ -234,6 +242,15 @@ public class BoardView extends Application {
             controller.userInteraction(event);
         }
     }
+    
+    private class ClickInteraction implements EventHandler<MouseEvent> {
+
+        @Override
+        public void handle(MouseEvent event) {
+            controller.clickedEvent(event);
+        }
+        
+    }
 
     private class Controller {
 
@@ -241,6 +258,11 @@ public class BoardView extends Application {
 
         Controller(Game sharedGame) {
             game = sharedGame;
+        }
+        
+        public void clickedEvent(MouseEvent event) {
+            Position clickedPos = converter.convertToPos(event.getX(), event.getY());
+            game.generateFixedWormhole(clickedPos);
         }
 
         public void userInteraction(KeyEvent event) {

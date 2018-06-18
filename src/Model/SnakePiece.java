@@ -28,9 +28,4 @@ public class SnakePiece {
     public String toString() {
         return "SnakePiece{" + "pos=" + pos + '}';
     }
-    
-    public void moveNorth() {
-        
-    }
-    
 }
