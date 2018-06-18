@@ -101,6 +101,9 @@ public class Game {
         return freePos.get(index);
     }
 
+    public int getTimeToLive(int index) {
+        return wormholes.get(index).getTimeToLive();
+    }
     private Position tmpEntry, tmpEntry2;
 
     public void generateFixedWormhole(Position clickedPos) {
@@ -209,16 +212,8 @@ public class Game {
         return new Result(time, snake.getSize() - snakeSize);
     }
 
-    public ArrayList<Position> getWormholes() {
-        ArrayList<Position> wormholePos = new ArrayList<>();
-        for (Wormhole hole : wormholes) {
-            if (!hole.isIsInside()) {
-                for (Position entries : hole.posOfHoles()) {
-                    wormholePos.add(entries);
-                }
-            }
-        }
-        return wormholePos;
+    public ArrayList<Wormhole> getWormholes() {
+        return (ArrayList<Wormhole>) wormholes.clone();
     }
 
     private ArrayList<Wormhole> enteredWormHoles = new ArrayList<>();
@@ -310,7 +305,7 @@ public class Game {
                 for (int i = wormholes.size() - 1; i >= 0; i--) {
                     //tries to negate time to live down to zero, if wormhole is dead remove it
                     if (!wormholes.get(i).negateToZero()) {
-                        wormholes.remove(i);
+                        removeWormhole(i);
                         if (randomWormhole) {
                             generateRandomWormhole();
                         }
@@ -319,6 +314,11 @@ public class Game {
                 time += 1;
             }
         };
+    }
+
+    private void removeWormhole(int index) {
+        wormholes.remove(index);
+        view.removeWormhole(index);
     }
 
     private void resetTime() {
