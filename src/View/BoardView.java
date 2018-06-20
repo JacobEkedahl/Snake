@@ -23,6 +23,7 @@ import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -34,12 +35,16 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -51,22 +56,23 @@ import javafx.stage.Stage;
 public class BoardView extends Application {
 
     private static int SIZE_SNAKE = 10;
-    private static int WIDTH = 20;
-    private static int HEIGHT = 20;
+    private static int WIDTH = 40;
+    private static int HEIGHT = 40;
     private static int SPEED = 150;
     private static int SCREEN_WIDTH = 600;
-    private static int SCREEN_HEIGHT = 600;
+    private static int SCREEN_HEIGHT = 800;
     private static int GAME_INFO_HEIGHT = 50;
     private static double INCREASE_SPEED = 0.95;
     private static int BORDERSIZE = 3;
-    private static int WORMHOLE_TIMETOLIVE = 10;
-    private static int WORMHOLE_INTERVAL = 3;
-    private static int MAX_WORMHOLES = 4;
+    private static int WORMHOLE_TIMETOLIVE = 30;
+    private static int WORMHOLE_INTERVAL = 1;
+    private static int MAX_WORMHOLES = 8;
     private static boolean RANDOM_WORMHOLES = true;
     private static boolean FIXED_WORMHOLES = false;
 
     private int heightBox, widthBox;
 
+    private Region leftInfo, rightInfo;
     private HBox gameInfoBox;
     private Rectangle frame;
     private Group startGroup;
@@ -81,11 +87,19 @@ public class BoardView extends Application {
     private Game game;
     private ArrayList<ImageView> board;
 
-    private HashMap<String, Rectangle> rectMap = new HashMap<String, Rectangle>();
+    private HashMap<String, Rectangle> rectMap = new HashMap<>();
     private ArrayList<Position> snakePos;
+
     private ArrayList<Position> wormholes = new ArrayList<>();
     private ArrayList<Group> wormholes_info = new ArrayList<>();
     private ArrayList<Label> wormholes_lbl = new ArrayList<>();
+    private HBox wormholes_box;
+
+    private HBox timeAndSpeed_info;
+    private Label timefornextspeed_lbl;
+    private Label currentscore_lbl;
+    private Label currentspeed_lbl;
+    private int currentspeed;
 
     private Converter converter;
 
@@ -99,12 +113,16 @@ public class BoardView extends Application {
     }
 
     public void setupGame() throws Exception {
+        converter = new Converter(SCREEN_WIDTH, SCREEN_HEIGHT, WIDTH, HEIGHT, GAME_INFO_HEIGHT);
+
         if (SIZE_SNAKE > WIDTH / 2) {
-            throw new Exception("Snake size to large: " + SIZE_SNAKE);
+            throw new Exception("Snake size too large: " + SIZE_SNAKE);
+        }
+        if (MAX_WORMHOLES > converter.getMaxWormholes()) {
+            throw new Exception("Max wormholes size is too large: " + MAX_WORMHOLES + ", possible max: " + converter.getMaxWormholes());
         }
         game = new Game(SIZE_SNAKE, WIDTH, HEIGHT, SPEED, INCREASE_SPEED,
                 WORMHOLE_TIMETOLIVE, WORMHOLE_INTERVAL, RANDOM_WORMHOLES, MAX_WORMHOLES, this);
-        converter = new Converter(SCREEN_WIDTH, SCREEN_HEIGHT, WIDTH, HEIGHT);
         game.init();
         snakePos = game.getSnakePosition();
     }
@@ -166,7 +184,7 @@ public class BoardView extends Application {
                 System.out.println("wormholes: size: " + wormholes_info.size());
                 try {
                     Group tmpGroup = wormholes_info.get(index);
-                    gameInfoBox.getChildren().remove(tmpGroup);
+                    wormholes_box.getChildren().remove(tmpGroup);
                     wormholes_info.remove(index);
                     wormholes_lbl.remove(index);
                     currentSizeWormholes--;
@@ -233,39 +251,127 @@ public class BoardView extends Application {
     }
 
     private void clearWormholeInfo() {
-        gameInfoBox.getChildren().clear();
+        wormholes_box.getChildren().clear();
         currentSizeWormholes = 0;
         wormholes_info.clear();
         wormholes_lbl.clear();
     }
 
-    private static final String controlLeft = "Left: S";
-    private static final String controlRight = "Right: D";
-    private static final String controlRestart = "Restart game: SPACEBAR";
-    private static final String infoWormhole = "Wormholes";
-    private static final String infoApple = "Apple";
+    //change keys
+    private static final String controlLeft = "Left: ";
+    private static final String controlRight = "Right: ";
+    private static final String controlRestart = "Restart game: ";
+    private static final String buttonLeft = "S";
+    private static final String buttonRight = "D";
+    private static final String buttonRestart = "SPACEBAR";
+
+    //wormhole settings
+    private static final String titleWormhole = "Wormhole: ";
+    private static final String infoWormholeRandom = "Random wormholes: ";
+    private static final String infoWormholeFixed = "Fixed wormholes: ";
+    private static final String infoWormholeInterval = "Generate new wormhole every (seconds): ";
+    private static final String infoWormholeLifespan = "Wormholes lifespan (seconds): ";
+    private static final String infoWormholeLimit = "Max wormholes to exist: ";
+
+    private static final String buttonRandom = "NO";
+    private static final String buttonInterval = "10";
+    private static final String buttonFixed = "YES";
+    private static final String buttonLifespan = "10";
+    private static final String buttonLimit = "1";
+
+    private static final String buttonApply = "APPLY";
+    private static final String infoApple = "Apple: ";
+
+    private ArrayList<Node> controllLabels = new ArrayList<>();
 
     private void initStart() {
         startPane = new GridPane();
         ArrayList<Label> infoLabels = new ArrayList<>();
-        infoLabels.add(new Label(controlLeft));
-        infoLabels.add(new Label(controlRight));
-        infoLabels.add(new Label(controlRestart));
-        infoLabels.add(new Label(infoWormhole));
-        infoLabels.add(new Label(infoApple));
+        VBox infoBox = new VBox();
+        infoBox.setPadding(new Insets(15, 12, 15, 12));
+        infoBox.setSpacing(10);
+        infoBox.setStyle("-fx-background-color: #e4fbfd;");
 
-        for (int row = 1; row <= infoLabels.size(); row++) {
-            startPane.add(infoLabels.get(row - 1), 1, row);
-        }
+        infoBox.getChildren().add(new Label(controlLeft));
+        infoBox.getChildren().add(new Label(controlRight));
+        infoBox.getChildren().add(new Label(controlRestart));
+        infoBox.getChildren().add(new Label(titleWormhole));
+        infoBox.getChildren().add(new Label(infoWormholeRandom));
+        infoBox.getChildren().add(new Label(infoWormholeFixed));
+        infoBox.getChildren().add(new Label(infoWormholeInterval));
+        infoBox.getChildren().add(new Label(infoWormholeLifespan));
+        infoBox.getChildren().add(new Label(infoWormholeLimit));
+        infoBox.getChildren().add(new Label(infoApple));
+
+        VBox controllBox = new VBox();
+        controllBox.setSpacing(10);
+        controllBox.setStyle("-fx-background-color: #e4fbfd");
+        controllBox.setPadding(new Insets(15, 12, 15, 12));
+        controllBox.getStylesheets().add("settings.css");
+        initControllLabels(controllBox);
+
+        startPane.add(infoBox, 1, 1); //col, row
+        startPane.add(controllBox, 2, 1);
+
         startGroup = new Group(startPane);
+    }
+
+    private void initControllLabels(VBox controllBox) {
+        helpInitControlls(new Label(buttonLeft), controllBox);
+        helpInitControlls(new Label(buttonRight), controllBox);
+        helpInitControlls(new Label(buttonRestart), controllBox);
+        helpInitControlls(new Rectangle(GAME_INFO_HEIGHT * 0.4, GAME_INFO_HEIGHT * 0.4, Color.BLUE), controllBox);
+        helpInitControlls(new Label(buttonRandom), controllBox);
+        helpInitControlls(new Label(buttonInterval), controllBox);
+        helpInitControlls(new Label(buttonFixed), controllBox);
+        helpInitControlls(new Label(buttonLifespan), controllBox);
+        helpInitControlls(new Label(buttonLimit), controllBox);
+        helpInitControlls(new Rectangle(GAME_INFO_HEIGHT * 0.4, GAME_INFO_HEIGHT * 0.4, Color.GREEN), controllBox);
+    }
+
+    private void helpInitControlls(Node node, VBox controllBox) {
+        if (node instanceof Label) {
+            Label label = (Label) node;
+            label.setOnMouseClicked(new SettingInteraction());
+            label.setPrefWidth(200);
+            controllLabels.add(label);
+            controllBox.getChildren().add(node);
+        } else if (node instanceof Rectangle) {
+            Rectangle rect = (Rectangle) node;
+            rect.setOnMouseClicked(new SettingInteraction());
+            controllLabels.add(rect);
+            controllBox.getChildren().add(rect);
+        }
     }
 
     private void initHBox() {
         gameInfoBox = new HBox();
-        gameInfoBox.setPadding(new Insets(15, 12, 15, 12));
         gameInfoBox.setSpacing(10);
         gameInfoBox.setStyle("-fx-background-color: #e4fbfd;");
-        gameInfoBox.setPrefHeight(100);
+        gameInfoBox.setPrefHeight(GAME_INFO_HEIGHT);
+        leftInfo = new Region();
+        HBox.setHgrow(leftInfo, Priority.ALWAYS);
+        initWormholeInfo();
+        initGameInfo();
+        gameInfoBox.getChildren().addAll(wormholes_box, leftInfo, timeAndSpeed_info);
+    }
+
+    private void initGameInfo() {
+        timeAndSpeed_info = new HBox();
+        timeAndSpeed_info.setPadding(new Insets(15, 12, 15, 12));
+        timeAndSpeed_info.setSpacing(10);
+        timeAndSpeed_info.setStyle("-fx-background-color: #e4fbfd;");
+        timefornextspeed_lbl = new Label("Hello");
+        currentscore_lbl = new Label("there");
+        currentspeed_lbl = new Label(":)");
+        timeAndSpeed_info.getChildren().addAll(timefornextspeed_lbl, currentscore_lbl, currentspeed_lbl);
+    }
+
+    private void initWormholeInfo() {
+        wormholes_box = new HBox();
+        wormholes_box.setPadding(new Insets(15, 12, 15, 12));
+        wormholes_box.setSpacing(10);
+        wormholes_box.setStyle("-fx-background-color: #e4fbfd;");
     }
 
     private void addWormholeInfo() {
@@ -277,7 +383,7 @@ public class BoardView extends Application {
         Group wormhole = new Group(wormholePane);
         wormholes_info.add(wormhole);
         wormholes_lbl.add(wormhole_lbl);
-        gameInfoBox.getChildren().add(wormhole);
+        wormholes_box.getChildren().add(wormhole);
     }
 
     private void initResult() {
@@ -348,12 +454,33 @@ public class BoardView extends Application {
 
     }
 
+    private class SettingInteraction implements EventHandler<MouseEvent> {
+
+        @Override
+        public void handle(MouseEvent event) {
+            controller.settingEvent(event);
+        }
+
+    }
+
     private class Controller {
 
         private Game game;
 
         Controller(Game sharedGame) {
             game = sharedGame;
+        }
+
+        public void settingEvent(MouseEvent event) {
+            Node node = (Node) event.getSource();
+
+            if (node instanceof Label) {
+                Label label = (Label) node;
+                System.out.println("text: " + label.getText());
+            } else if (node instanceof Rectangle) {
+                Rectangle rect = (Rectangle) node;
+                System.out.println("Color: " + rect.getFill().toString());
+            }
         }
 
         public void clickedEvent(MouseEvent event) {
