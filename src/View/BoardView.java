@@ -86,9 +86,9 @@ public class BoardView extends Application {
     private static boolean FIXED_WORMHOLES = false;
 
     //description of what to change and the id of the controlnodes
-    private static final String controlLeft = "Left: ";
-    private static final String controlRight = "Right: ";
-    private static final String controlRestart = "Restart game: ";
+    private static final String controlLeft = "Left";
+    private static final String controlRight = "Right";
+    private static final String controlRestart = "Restart game";
     private static final String titleWormhole = "Wormhole";
     private static final String infoWormholeRandom = "Random wormholes: ";
     private static final String infoWormholeFixed = "Fixed wormholes: ";
@@ -112,6 +112,7 @@ public class BoardView extends Application {
 
     //hashmap of references to the controlls in the settingsmenu (id is used to find the node)
     private HashMap<String, Node> controllNodes = new HashMap<>();
+    private Label selectedLabel = null;
 
     private int heightBox, widthBox;
 
@@ -315,6 +316,7 @@ public class BoardView extends Application {
     }
 
     private int currentSizeWormholes = 0;
+
     private void showInfoWormholes(ArrayList<Wormhole> tmpWormholes) {
         Platform.runLater(new Runnable() {
             @Override
@@ -567,6 +569,23 @@ public class BoardView extends Application {
         label.setText(text);
     }
 
+    public void selectLabel(Label label) {
+        if (selectedLabel == null) {
+            selectedLabel = label;
+            selectedLabel.setStyle("-fx-background-color: #7c8181;");
+        } else if (selectedLabel.equals(label)) {
+            selectedLabel = null;
+            unselectLabel(label);
+        } else {
+            selectedLabel = label;
+            selectedLabel.setStyle("-fx-background-color: #7c8181;");
+        }
+    }
+
+    public void unselectLabel(Label label) {
+        label.setStyle("-fx-background-color: #444b4b;");
+    }
+
     public void dialogMessage(Label label) {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("");
@@ -651,6 +670,8 @@ public class BoardView extends Application {
                     updateLabel(label, "NO");
                 } else if (currentText.equals("NO")) {
                     updateLabel(label, "YES");
+                } else if (label.getId().equals(controlLeft) || label.getId().equals(controlRight) || label.getId().equals(controlRestart)) {
+                    selectLabel(label);
                 } else {
                     dialogMessage(label);
                 }
@@ -669,7 +690,11 @@ public class BoardView extends Application {
         }
 
         public void userInteraction(KeyEvent event) {
-            if (event.getCode() == KeyCode.valueOf(leftKey)) {
+            if (selectedLabel != null) {
+                selectedLabel.setText(event.getCode().getName().toUpperCase());
+                unselectLabel(selectedLabel);
+                selectedLabel = null;
+            } else if (event.getCode() == KeyCode.valueOf(leftKey)) {
                 System.out.println(KeyCode.S);
                 game.goLeft();
             } else if (event.getCode() == KeyCode.valueOf(rightKey)) {
