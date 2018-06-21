@@ -13,13 +13,42 @@ import java.util.ArrayList;
  */
 public class Converter {
 
-    private int widthScreen, heightScreen, width, height;
+    private int widthScreen, heightScreen, width, height, gameInfoHeight;
 
-    public Converter(int widthScreen, int heightScreen, int width, int height) {
+    public Converter(int widthScreen, int heightScreen, int width, int height, int gameInfoHeight) {
         this.widthScreen = widthScreen;
         this.heightScreen = heightScreen;
         this.width = width;
         this.height = height;
+        this.gameInfoHeight = gameInfoHeight;
+    }
+    
+    public boolean strToBool(String text) {
+        if (text.equals("YES")) {
+            return true;
+        } else if (text.equals("NO")) {
+            return false;
+        }
+        return false;
+    }
+
+    public boolean isInteger(String s, int radix) {
+        if (s.isEmpty()) {
+            return false;
+        }
+        for (int i = 0; i < s.length(); i++) {
+            if (i == 0 && s.charAt(i) == '-') {
+                if (s.length() == 1) {
+                    return false;
+                } else {
+                    continue;
+                }
+            }
+            if (Character.digit(s.charAt(i), radix) < 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public int getHeightBox() {
@@ -28,6 +57,14 @@ public class Converter {
 
     public int getWidthBox() {
         return widthScreen / width;
+    }
+
+    public int getSizeRectInfo() {
+        return (int) (gameInfoHeight * 0.5);
+    }
+
+    public int getMaxWormholes() {
+        return (widthScreen / 2) / ((getSizeRectInfo() + 10));
     }
 
     public Position convertToPos(double x, double y) {

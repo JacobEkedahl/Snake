@@ -1,0 +1,31 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 2018-jun-19, 20:12:10
+    Author     : Jacob
+*/
+
+
+#Wormhole:hover {
+    -fx-opacity: 50%; /* the same, with explicit opacity of 1 */
+}
+
+#Apple:hover {
+    -fx-opacity: 50%; /* the same, with explicit opacity of 1 */
+}
+
+.label {
+    -fx-background-radius: 15 15 15 15;
+    -fx-background-color: #444b4b; 
+    -fx-alignment: top-center;
+    -fx-content-display:center;
+    -fx-text-fill: white;
+}
+
+.label:hover {
+    -fx-font-weight: bold;
+    -fx-background-color: #161919; 
+}

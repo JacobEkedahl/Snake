@@ -61,6 +61,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javax.swing.JFrame;
 
 /**
  *
@@ -68,10 +69,11 @@ import javafx.stage.Stage;
  */
 public class BoardView extends Application {
 
+    //standard settings for the game
     private static int SIZE_SNAKE = 10;
+    private static int SPEED = 150;
     private static int WIDTH = 40;
     private static int HEIGHT = 40;
-    private static int SPEED = 150;
     private static int SCREEN_WIDTH = 600;
     private static int SCREEN_HEIGHT = 800;
     private static int GAME_INFO_HEIGHT = 50;
@@ -79,12 +81,39 @@ public class BoardView extends Application {
     private static int BORDERSIZE = 3;
     private static int WORMHOLE_TIMETOLIVE = 30;
     private static int WORMHOLE_INTERVAL = 1;
-    private static int MAX_WORMHOLES = 8;
+    private static int MAX_WORMHOLES = 5;
     private static boolean RANDOM_WORMHOLES = true;
     private static boolean FIXED_WORMHOLES = false;
 
+    //description of what to change and the id of the controlnodes
+    private static final String controlLeft = "Left: ";
+    private static final String controlRight = "Right: ";
+    private static final String controlRestart = "Restart game: ";
+    private static final String titleWormhole = "Wormhole";
+    private static final String infoWormholeRandom = "Random wormholes: ";
+    private static final String infoWormholeFixed = "Fixed wormholes: ";
+    private static final String infoWormholeInterval = "Generate new wormhole every (seconds): ";
+    private static final String infoWormholeLifespan = "Wormholes lifespan (seconds): ";
+    private static final String infoWormholeLimit = "Max wormholes to exist: ";
+    private static final String titleApple = "Apple";
+
+    //the nodes actnig as button to change the settings
+    private static final String buttonLeft = "S";
+    private static final String buttonRight = "D";
+    private static final String buttonRestart = "SPACE";
+    private static final String buttonRandom = "NO";
+    private static final String buttonInterval = "10";
+    private static final String buttonFixed = "YES";
+    private static final String buttonLifespan = "10";
+    private static final String buttonLimit = "1";
+    private static final String buttonApply = "SAVE";
+
+    //hashmap of references to the controlls in the settingsmenu (id is used to find the node)
+    private HashMap<String, Node> controllNodes = new HashMap<>();
+
     private int heightBox, widthBox;
 
+    //view controlers
     private Region leftInfo, rightInfo;
     private HBox gameInfoBox;
     private Rectangle frame;
@@ -99,10 +128,8 @@ public class BoardView extends Application {
     private Label scoreLbl;
     private Game game;
     private ArrayList<ImageView> board;
-
     private HashMap<String, Rectangle> rectMap = new HashMap<>();
     private ArrayList<Position> snakePos;
-
     private ArrayList<Position> wormholes = new ArrayList<>();
     private ArrayList<Group> wormholes_info = new ArrayList<>();
     private ArrayList<Label> wormholes_lbl = new ArrayList<>();
@@ -129,6 +156,7 @@ public class BoardView extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
+        primaryStage.getIcons().add(new Image("snakeIcon.png"));
         initStandardSettings();
         setupGame();
         controller = new Controller(game);
@@ -139,10 +167,10 @@ public class BoardView extends Application {
         leftKey = buttonLeft;
         rightKey = buttonRight;
         restartKey = buttonRestart;
-        
+
         wormholeColor = Color.BLUE;
         appleColor = Color.GREEN;
-        
+
         sizeSnake = SIZE_SNAKE;
         width = WIDTH;
         height = HEIGHT;
@@ -161,10 +189,10 @@ public class BoardView extends Application {
         leftKey = getStringFromMap(controlLeft);
         rightKey = getStringFromMap(controlRight);
         restartKey = getStringFromMap(controlRestart);
-        
+
         wormholeColor = getColorFromMap(titleWormhole);
         appleColor = getColorFromMap(titleApple);
-        
+
         sizeSnake = 10; //controllNodes.get(this)
         width = WIDTH;
         height = HEIGHT;
@@ -178,7 +206,7 @@ public class BoardView extends Application {
         randomWormholes = converter.strToBool(getStringFromMap(infoWormholeRandom));
         fixedWormholes = converter.strToBool(getStringFromMap(infoWormholeFixed));
     }
-    
+
     private Color getColorFromMap(String id) {
         return (Color) ((Rectangle) controllNodes.get(id)).getFill();
     }
@@ -341,31 +369,6 @@ public class BoardView extends Application {
         wormholes_lbl.clear();
     }
 
-    //description of what to change and the id of the controlnodes
-    private static final String controlLeft = "Left: ";
-    private static final String controlRight = "Right: ";
-    private static final String controlRestart = "Restart game: ";
-    private static final String titleWormhole = "Wormhole";
-    private static final String infoWormholeRandom = "Random wormholes: ";
-    private static final String infoWormholeFixed = "Fixed wormholes: ";
-    private static final String infoWormholeInterval = "Generate new wormhole every (seconds): ";
-    private static final String infoWormholeLifespan = "Wormholes lifespan (seconds): ";
-    private static final String infoWormholeLimit = "Max wormholes to exist: ";
-    private static final String titleApple = "Apple";
-
-    //the nodes actnig as button to change the settings
-    private static final String buttonLeft = "S";
-    private static final String buttonRight = "D";
-    private static final String buttonRestart = "SPACE";
-    private static final String buttonRandom = "NO";
-    private static final String buttonInterval = "10";
-    private static final String buttonFixed = "YES";
-    private static final String buttonLifespan = "10";
-    private static final String buttonLimit = "1";
-    private static final String buttonApply = "SAVE";
-
-    private HashMap<String, Node> controllNodes = new HashMap<>();
-
     private void initStart() {
         startPane = new GridPane();
         VBox infoBox = new VBox();
@@ -483,7 +486,7 @@ public class BoardView extends Application {
 
     private void initWormholeInfo() {
         wormholes_box = new HBox();
-        wormholes_box.setPadding(new Insets(15, 12, 15, 12));
+        wormholes_box.setPadding(new Insets(0, 12, 0, 12));
         wormholes_box.setSpacing(10);
         wormholes_box.setStyle("-fx-background-color: #e4fbfd;");
     }
@@ -491,7 +494,7 @@ public class BoardView extends Application {
     private void addWormholeInfo() {
         TilePane wormholePane = new TilePane(Orientation.VERTICAL);
         wormholePane.setPrefRows(2);
-        Rectangle rect = new Rectangle(GAME_INFO_HEIGHT * 0.4, GAME_INFO_HEIGHT * 0.4, Color.BLUE);
+        Rectangle rect = new Rectangle(GAME_INFO_HEIGHT * 0.3, GAME_INFO_HEIGHT * 0.3, wormholeColor);
         Label wormhole_lbl = new Label("10");
         wormholePane.getChildren().addAll(rect, wormhole_lbl);
         Group wormhole = new Group(wormholePane);
@@ -562,13 +565,16 @@ public class BoardView extends Application {
         dialog.setContentText("");
         dialog.setHeaderText("");
         dialog.setGraphic(null);
+        Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(
+                new Image("snakeIcon.png"));
         Optional<String> result = dialog.showAndWait();
 
         if (result.isPresent()) {
             String input = result.get();
             input = input.toUpperCase();
             if (input.equals(" ")) {
-                input = "SPACEBAR";
+                input = "SPACE";
             }
             if (!input.equals("")) {
                 label.setText(input);

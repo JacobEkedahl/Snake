@@ -77,6 +77,20 @@ public class Game {
         generateRandomApple();
         resetTimerGame(START);
     }
+    
+    public void updateSettings(int snakeSize, int width, int height, int speed, double percentageIncrease,
+            int intervalWormhole, int wormholeInterval, boolean randomWormhole, int maxWormholes) {
+                this.maxWormholes = maxWormholes;
+        this.wormholeInterval = wormholeInterval;
+        this.randomWormhole = randomWormhole;
+        this.intervalWormhole = intervalWormhole;
+        this.percentageIncrease = percentageIncrease;
+        this.originalSpeed = speed;
+        this.snakeSize = snakeSize;
+        this.width = width;
+        this.height = height;
+        this.view = view;
+    }
 
     private void initBoard(int width, int height) {
         board = new ArrayList<>();
@@ -97,8 +111,9 @@ public class Game {
         return false;
     }
 
-    private Position getSingleFreePos() {
+    private Position getSingleFreePos(Position firstHole) {
         ArrayList<Position> freePos = getFreePos(snake.getPosition());
+        freePos.remove(firstHole);
         int size = freePos.size();
         int index = (int) (Math.random() * size);
         return freePos.get(index);
@@ -123,18 +138,15 @@ public class Game {
 
     private synchronized void generateRandomWormhole() {
         if (wormholes.size() < maxWormholes) {
-            Position entry = getSingleFreePos();
-            Position entry2 = getSingleFreePos();
-            while (entry.equals(entry2)) {
-                entry2 = getSingleFreePos();
-            }
+            Position entry = getSingleFreePos(null);
+            Position entry2 = getSingleFreePos(entry);
             Wormhole newWormhole = new Wormhole(entry, entry2, intervalWormhole);
             wormholes.add(newWormhole);
         }
     }
 
     private void generateRandomApple() {
-        Position pos = getSingleFreePos();
+        Position pos = getSingleFreePos(null);
         Apple newApple = new Apple(pos.getX(), pos.getY());
         apples.add(newApple);
     }
@@ -160,10 +172,10 @@ public class Game {
         return safePos;
     }
 
-    private ArrayList<Position> getFreePos(ArrayList<Position> snakeBody) {
+    private synchronized ArrayList<Position> getFreePos(ArrayList<Position> snakeBody) {
         ArrayList<Position> tmpBoard = (ArrayList<Position>) board.clone();
         tmpBoard.removeAll(snakeBody);
-        tmpBoard.removeAll(apples);
+        tmpBoard.removeAll(getApples());
         for (Wormhole hole : wormholes) {
             tmpBoard.removeAll(hole.posOfHoles());
         }
@@ -298,7 +310,6 @@ public class Game {
     private void gameOver() {
         resetTimerGame(DONT_START);
         resetTimerTime();
-        wormholes.clear();
         view.showGameOver();
     }
 
