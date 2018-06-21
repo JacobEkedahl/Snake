@@ -10,12 +10,8 @@ import Model.Game;
 import Model.Position;
 import Model.Result;
 import Model.Wormhole;
-import com.sun.javafx.scene.control.skin.CustomColorDialog;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,46 +20,36 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ColorPicker;
-import javafx.scene.control.Control;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javax.swing.JFrame;
 
 /**
  *
@@ -143,7 +129,7 @@ public class BoardView extends Application {
     private GridPane boardPane;
     private Group boardGroup;
     private TilePane resultView;
-    private Group resultGroup;
+    private BorderPane resultGroup;
     private Label timeLbl;
     private Label scoreLbl;
     private Game game;
@@ -428,11 +414,11 @@ public class BoardView extends Application {
 
         startPane.add(infoBox, 1, 1); //col, row
         startPane.add(controllBox, 2, 1);
-        startPane.getStylesheets().add("settings.css");
 
         Button btn = new Button(buttonApply);
         btn.setOnMouseClicked(new SettingSubmit());
         btn.setFocusTraversable(false);
+        btn.getStylesheets().add("settings.css");
         VBox vbox = new VBox(startPane, btn);
         vbox.setPadding(new Insets(BORDERSIZE, 0, 60, BORDERSIZE));
         vbox.setSpacing(10);
@@ -566,7 +552,15 @@ public class BoardView extends Application {
         scoreLbl = new Label("test");
         timeLbl = new Label("test");
         resultView.getChildren().addAll(gameOverLbl, scoreLbl, timeLbl);
-        resultGroup = new Group(resultView);
+        Group group = new Group(resultView);
+        resultGroup = new BorderPane();
+        resultGroup.setCenter(group);
+        resultGroup.getStylesheets().add("result.css");
+        BorderStroke stroke = new BorderStroke(Color.BLACK,
+                BorderStrokeStyle.SOLID, CornerRadii.EMPTY,
+                new BorderWidths(BORDERSIZE));
+        Border border = new Border(stroke);
+        resultGroup.setBorder(border);
     }
 
     private void initBoard() {
