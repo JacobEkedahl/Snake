@@ -28,6 +28,7 @@ import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -60,6 +61,7 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javax.swing.JFrame;
 
@@ -210,14 +212,14 @@ public class BoardView extends Application {
         gameColor = getColorFromMap(titleScreen);
         snakeColor = getColorFromMap(titleSnake);
         sizeSnake = Integer.parseInt(getStringFromMap(infoSnakesize));
-        
+
         width = Integer.parseInt(getStringFromMap(infoGameWidth));
         height = Integer.parseInt(getStringFromMap(infoGameHeight));
         screenWidth = Integer.parseInt(getStringFromMap(infoScreenWidth));
         screenHeight = Integer.parseInt(getStringFromMap(infoScreenHeight));
         percentageIncrease = INCREASE_SPEED;
         speed = SPEED;
-        
+
         timetolive = Integer.parseInt(getStringFromMap(infoWormholeLifespan));
         interval = Integer.parseInt(getStringFromMap(infoWormholeInterval));
         maxwormholes = Integer.parseInt(getStringFromMap(infoWormholeLimit));
@@ -433,7 +435,7 @@ public class BoardView extends Application {
 
         startGroup = new Group(vbox);
     }
-    
+
     private void initControllLabels(VBox controllBox) {
         helpInitControlls(new Label(buttonLeft), controllBox, controlLeft);
         helpInitControlls(new Label(buttonRight), controllBox, controlRight);
@@ -559,31 +561,55 @@ public class BoardView extends Application {
             boardPane.add(rect, p.getX(), p.getY());
         }
 
+        updateBoardSize();
+
         frame = new Rectangle((widthBox * width) + (BORDERSIZE * 2), heightBox * height + (BORDERSIZE * 2), Color.BLACK);
         boardGroup.getChildren().addAll(frame, boardPane);
         boardPane.setLayoutX(BORDERSIZE);
         boardPane.setLayoutY(BORDERSIZE);
+    }
+
+    public void showBoard() {
         mainPane.setCenter(boardGroup);
         mainPane.setBottom(gameInfoBox);
     }
 
-    private void initView(Stage primaryStage) {
+    private void updateBoardSize() {
         heightBox = converter.getHeightBox();
         widthBox = converter.getWidthBox();
+
+        ArrayList<Position> boardPosition = game.getBoard();
+        board = new ArrayList<>();
+
+        for (Position p : boardPosition) {
+            String id = p.getId();
+            Rectangle rect = new Rectangle(widthBox, heightBox, gameColor);
+            rect.setId(id);
+            rectMap.put(id, rect);
+            boardPane.add(rect, p.getX(), p.getY());
+        }
+    }
+
+    private void initView(Stage primaryStage) {
         mainPane = new BorderPane();
         initResult();
         initBoard();
         initStart();
         initHBox();
         mainPane.setCenter(startGroup); //startGroup
+        updateScreenSize();
+        primaryStage.show();
+    }
 
+    public void updateScreenSize() {
+        mainPane = new BorderPane();
+        mainPane.setCenter(startGroup); //startGroup
         Scene scene = new Scene(mainPane, screenWidth + (BORDERSIZE * 2), screenHeight + (BORDERSIZE * 2) + GAME_INFO_HEIGHT);
         scene.setOnKeyPressed(new GameInteraction());
         scene.setOnMouseClicked(new ClickInteraction());
         primaryStage.setTitle("Snake");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
-        primaryStage.show();
     }
 
     public void updateLabel(Label label, String text) {
@@ -676,6 +702,8 @@ public class BoardView extends Application {
             setNewSettings();
             try {
                 setupGame();
+                updateBoardSize();
+                updateScreenSize();
             } catch (Exception ex) {
                 Logger.getLogger(BoardView.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -728,6 +756,7 @@ public class BoardView extends Application {
                 game.init();
                 clearWormholeInfo();
                 initBoard();
+                showBoard();
                 game.start();
             }
         }

@@ -10,19 +10,19 @@ and open the template in the editor.
 
 
 #Wormhole:hover {
-    -fx-opacity: 50%; /* the same, with explicit opacity of 1 */
+    -fx-opacity: 50%; /* rectangle in settings with opacity of 50% */
 }
 
 #Apple:hover {
-    -fx-opacity: 50%; /* the same, with explicit opacity of 1 */
+    -fx-opacity: 50%;
 }
 
 #Game:hover {
-    -fx-opacity: 50%; /* the same, with explicit opacity of 1 */
+    -fx-opacity: 50%;
 }
 
 #Snake:hover {
-    -fx-opacity: 50%; /* the same, with explicit opacity of 1 */
+    -fx-opacity: 50%;
 }
 
 .label {

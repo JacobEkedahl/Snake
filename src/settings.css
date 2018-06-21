@@ -9,8 +9,8 @@ and open the template in the editor.
 */
 
 .root {
-    -fx-background-fill: black, white ;
-    -fx-background-insets: 0, 10 ;
+        -fx-background-fill: black, white ;
+        -fx-background-insets: 0, 10 ;
 }
 
 .gridpane {
