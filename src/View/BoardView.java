@@ -70,6 +70,10 @@ import javax.swing.JFrame;
  * @author Jacob
  */
 public class BoardView extends Application {
+    
+    //standard settings for the settings
+    private static int SCREEN_WIDTH_SETTINGS = 550;
+    private static int SCREEN_HEIGHT_SETTINGS = 700;
 
     //standard settings for the game
     private static int SIZE_SNAKE = 10;
@@ -600,6 +604,11 @@ public class BoardView extends Application {
         updateScreenSize();
         primaryStage.show();
     }
+    
+    public void screenSizeSettings() {
+        primaryStage.setHeight(SCREEN_WIDTH_SETTINGS);
+        primaryStage.setHeight(SCREEN_HEIGHT_SETTINGS);
+    }
 
     public void updateScreenSize() {
         mainPane = new BorderPane();
@@ -703,7 +712,6 @@ public class BoardView extends Application {
             try {
                 setupGame();
                 updateBoardSize();
-                updateScreenSize();
             } catch (Exception ex) {
                 Logger.getLogger(BoardView.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -753,6 +761,7 @@ public class BoardView extends Application {
             } else if (event.getCode() == KeyCode.DOWN) {
                 game.decreaseSpeed(INCREASE_SPEED);
             } else if (event.getCode() == KeyCode.valueOf(restartKey)) {
+                updateScreenSize();
                 game.init();
                 clearWormholeInfo();
                 initBoard();
