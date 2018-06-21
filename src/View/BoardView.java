@@ -70,7 +70,7 @@ import javax.swing.JFrame;
 public class BoardView extends Application {
 
     //standard settings for the game
-    private static int SIZE_SNAKE = 20;
+    private static int SIZE_SNAKE = 10;
     private static int SPEED = 150;
     private static int WIDTH = 40;
     private static int HEIGHT = 40;
@@ -97,7 +97,12 @@ public class BoardView extends Application {
     private static final String infoWormholeLimit = "Max wormholes to exist: ";
     private static final String titleApple = "Apple";
     private static final String titleScreen = "Game";
+    private static final String infoGameWidth = "Game width squares (Integer)";
+    private static final String infoGameHeight = "Game height squares (Integer)";
+    private static final String infoScreenWidth = "Screen width (Integer)";
+    private static final String infoScreenHeight = "Screen height (Integer)";
     private static final String titleSnake = "Snake";
+    private static final String infoSnakesize = "Snake size (Integer)";
 
     //the nodes actnig as button to change the settings
     private static final String buttonLeft = "S";
@@ -108,7 +113,12 @@ public class BoardView extends Application {
     private static final String buttonFixed = "YES";
     private static final String buttonLifespan = "10";
     private static final String buttonLimit = "1";
-    private static final String buttonApply = "SAVE";
+    private static final String buttonGameWidth = "40";
+    private static final String buttonGameHeight = "40";
+    private static final String buttonScreenWidth = "600";
+    private static final String buttonScreenHeight = "800";
+    private static final String buttonSnakeSize = "10";
+    private static final String buttonApply = "APPLY";
 
     //hashmap of references to the controlls in the settingsmenu (id is used to find the node)
     private HashMap<String, Node> controllNodes = new HashMap<>();
@@ -199,17 +209,18 @@ public class BoardView extends Application {
         appleColor = getColorFromMap(titleApple);
         gameColor = getColorFromMap(titleScreen);
         snakeColor = getColorFromMap(titleSnake);
-
-        sizeSnake = SIZE_SNAKE; //controllNodes.get(this)
-        width = WIDTH;
-        height = HEIGHT;
-        speed = SPEED;
+        sizeSnake = Integer.parseInt(getStringFromMap(infoSnakesize));
+        
+        width = Integer.parseInt(getStringFromMap(infoGameWidth));
+        height = Integer.parseInt(getStringFromMap(infoGameHeight));
+        screenWidth = Integer.parseInt(getStringFromMap(infoScreenWidth));
+        screenHeight = Integer.parseInt(getStringFromMap(infoScreenHeight));
         percentageIncrease = INCREASE_SPEED;
+        speed = SPEED;
+        
         timetolive = Integer.parseInt(getStringFromMap(infoWormholeLifespan));
         interval = Integer.parseInt(getStringFromMap(infoWormholeInterval));
         maxwormholes = Integer.parseInt(getStringFromMap(infoWormholeLimit));
-        screenWidth = SCREEN_WIDTH;
-        screenHeight = SCREEN_HEIGHT;
         randomWormholes = converter.strToBool(getStringFromMap(infoWormholeRandom));
         fixedWormholes = converter.strToBool(getStringFromMap(infoWormholeFixed));
     }
@@ -394,7 +405,12 @@ public class BoardView extends Application {
         infoBox.getChildren().add(new Label(infoWormholeLimit));
         infoBox.getChildren().add(new Label(titleApple));
         infoBox.getChildren().add(new Label(titleScreen));
+        infoBox.getChildren().add(new Label(infoGameWidth));
+        infoBox.getChildren().add(new Label(infoGameHeight));
+        infoBox.getChildren().add(new Label(infoScreenWidth));
+        infoBox.getChildren().add(new Label(infoScreenHeight));
         infoBox.getChildren().add(new Label(titleSnake));
+        infoBox.getChildren().add(new Label(infoSnakesize));
 
         VBox controllBox = new VBox();
         controllBox.setSpacing(10);
@@ -417,7 +433,7 @@ public class BoardView extends Application {
 
         startGroup = new Group(vbox);
     }
-
+    
     private void initControllLabels(VBox controllBox) {
         helpInitControlls(new Label(buttonLeft), controllBox, controlLeft);
         helpInitControlls(new Label(buttonRight), controllBox, controlRight);
@@ -430,7 +446,12 @@ public class BoardView extends Application {
         helpInitControlls(new Label(buttonLimit), controllBox, infoWormholeLimit);
         generatePicker(controllBox, appleColor, titleApple);
         generatePicker(controllBox, gameColor, titleScreen);
+        helpInitControlls(new Label(buttonGameWidth), controllBox, infoGameWidth);
+        helpInitControlls(new Label(buttonGameHeight), controllBox, infoGameHeight);
+        helpInitControlls(new Label(buttonScreenWidth), controllBox, infoScreenWidth);
+        helpInitControlls(new Label(buttonScreenHeight), controllBox, infoScreenHeight);
         generatePicker(controllBox, snakeColor, titleSnake);
+        helpInitControlls(new Label(buttonSnakeSize), controllBox, infoSnakesize);
     }
 
     private void generatePicker(VBox controllBox, Color color, String id) {
