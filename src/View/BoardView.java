@@ -124,6 +124,7 @@ public class BoardView extends Application {
     private String leftKey, rightKey, restartKey;
     private double percentageIncrease;
     private boolean randomWormholes, fixedWormholes;
+    private Color wormholeColor, appleColor;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -138,6 +139,9 @@ public class BoardView extends Application {
         leftKey = buttonLeft;
         rightKey = buttonRight;
         restartKey = buttonRestart;
+        
+        wormholeColor = Color.BLUE;
+        appleColor = Color.GREEN;
         
         sizeSnake = SIZE_SNAKE;
         width = WIDTH;
@@ -158,6 +162,9 @@ public class BoardView extends Application {
         rightKey = getStringFromMap(controlRight);
         restartKey = getStringFromMap(controlRestart);
         
+        wormholeColor = getColorFromMap(titleWormhole);
+        appleColor = getColorFromMap(titleApple);
+        
         sizeSnake = 10; //controllNodes.get(this)
         width = WIDTH;
         height = HEIGHT;
@@ -170,6 +177,10 @@ public class BoardView extends Application {
         screenHeight = SCREEN_HEIGHT;
         randomWormholes = converter.strToBool(getStringFromMap(infoWormholeRandom));
         fixedWormholes = converter.strToBool(getStringFromMap(infoWormholeFixed));
+    }
+    
+    private Color getColorFromMap(String id) {
+        return (Color) ((Rectangle) controllNodes.get(id)).getFill();
     }
 
     private String getStringFromMap(String id) {
@@ -244,7 +255,7 @@ public class BoardView extends Application {
         wormholes = converter.getWormholes(tmpWormholes);
         for (Position p : wormholes) {
             Rectangle rect = rectMap.get(p.getId());
-            rect.setFill(Color.BLUE);
+            rect.setFill(wormholeColor);
         }
 
         showInfoWormholes(tmpWormholes);
@@ -312,7 +323,7 @@ public class BoardView extends Application {
         //   System.out.println("Apple size: " + apples.size());
         for (Position p : apples) {
             Rectangle rect = rectMap.get(p.getId());
-            rect.setFill(Color.GREEN);
+            rect.setFill(appleColor);
         }
     }
 
