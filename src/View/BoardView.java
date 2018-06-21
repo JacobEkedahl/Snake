@@ -70,7 +70,7 @@ import javax.swing.JFrame;
 public class BoardView extends Application {
 
     //standard settings for the game
-    private static int SIZE_SNAKE = 10;
+    private static int SIZE_SNAKE = 20;
     private static int SPEED = 150;
     private static int WIDTH = 40;
     private static int HEIGHT = 40;
@@ -96,6 +96,8 @@ public class BoardView extends Application {
     private static final String infoWormholeLifespan = "Wormholes lifespan (seconds): ";
     private static final String infoWormholeLimit = "Max wormholes to exist: ";
     private static final String titleApple = "Apple";
+    private static final String titleScreen = "Game";
+    private static final String titleSnake = "Snake";
 
     //the nodes actnig as button to change the settings
     private static final String buttonLeft = "S";
@@ -151,7 +153,7 @@ public class BoardView extends Application {
     private String leftKey, rightKey, restartKey;
     private double percentageIncrease;
     private boolean randomWormholes, fixedWormholes;
-    private Color wormholeColor, appleColor;
+    private Color wormholeColor, appleColor, gameColor, snakeColor;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -170,6 +172,8 @@ public class BoardView extends Application {
 
         wormholeColor = Color.BLUE;
         appleColor = Color.GREEN;
+        gameColor = Color.WHITE;
+        snakeColor = Color.BLACK;
 
         sizeSnake = SIZE_SNAKE;
         width = WIDTH;
@@ -192,8 +196,10 @@ public class BoardView extends Application {
 
         wormholeColor = getColorFromMap(titleWormhole);
         appleColor = getColorFromMap(titleApple);
+        gameColor = getColorFromMap(titleScreen);
+        snakeColor = getColorFromMap(titleSnake);
 
-        sizeSnake = 10; //controllNodes.get(this)
+        sizeSnake = SIZE_SNAKE; //controllNodes.get(this)
         width = WIDTH;
         height = HEIGHT;
         speed = SPEED;
@@ -265,7 +271,7 @@ public class BoardView extends Application {
         ArrayList<Position> position = game.getSnakePosition();
         for (Position p : position) {
             Rectangle rect = rectMap.get(p.getId());
-            rect.setFill(Color.BLACK);
+            rect.setFill(snakeColor);
         }
         snakePos = position;
     }
@@ -273,7 +279,7 @@ public class BoardView extends Application {
     private void clearWormholes() {
         for (Position p : wormholes) {
             Rectangle rect = rectMap.get(p.getId());
-            rect.setFill(Color.WHITE);
+            rect.setFill(gameColor);
         }
     }
 
@@ -309,7 +315,6 @@ public class BoardView extends Application {
     }
 
     private int currentSizeWormholes = 0;
-
     private void showInfoWormholes(ArrayList<Wormhole> tmpWormholes) {
         Platform.runLater(new Runnable() {
             @Override
@@ -358,7 +363,7 @@ public class BoardView extends Application {
     private void clearSnake() {
         for (Position p : snakePos) {
             Rectangle rect = rectMap.get(p.getId());
-            rect.setFill(Color.WHITE);
+            rect.setFill(gameColor);
         }
     }
 
@@ -386,6 +391,8 @@ public class BoardView extends Application {
         infoBox.getChildren().add(new Label(infoWormholeLifespan));
         infoBox.getChildren().add(new Label(infoWormholeLimit));
         infoBox.getChildren().add(new Label(titleApple));
+        infoBox.getChildren().add(new Label(titleScreen));
+        infoBox.getChildren().add(new Label(titleSnake));
 
         VBox controllBox = new VBox();
         controllBox.setSpacing(10);
@@ -413,13 +420,15 @@ public class BoardView extends Application {
         helpInitControlls(new Label(buttonLeft), controllBox, controlLeft);
         helpInitControlls(new Label(buttonRight), controllBox, controlRight);
         helpInitControlls(new Label(buttonRestart), controllBox, controlRestart);
-        generatePicker(controllBox, Color.BLUE, titleWormhole);
+        generatePicker(controllBox, wormholeColor, titleWormhole);
         helpInitControlls(new Label(buttonRandom), controllBox, infoWormholeRandom);
         helpInitControlls(new Label(buttonInterval), controllBox, infoWormholeInterval);
         helpInitControlls(new Label(buttonFixed), controllBox, infoWormholeFixed);
         helpInitControlls(new Label(buttonLifespan), controllBox, infoWormholeLifespan);
         helpInitControlls(new Label(buttonLimit), controllBox, infoWormholeLimit);
-        generatePicker(controllBox, Color.GREEN, titleApple);
+        generatePicker(controllBox, appleColor, titleApple);
+        generatePicker(controllBox, gameColor, titleScreen);
+        generatePicker(controllBox, snakeColor, titleSnake);
     }
 
     private void generatePicker(VBox controllBox, Color color, String id) {
@@ -521,7 +530,7 @@ public class BoardView extends Application {
 
         for (Position p : boardPosition) {
             String id = p.getId();
-            Rectangle rect = new Rectangle(widthBox, heightBox, Color.WHITE);
+            Rectangle rect = new Rectangle(widthBox, heightBox, gameColor);
             rect.setId(id);
             rectMap.put(id, rect);
             boardPane.add(rect, p.getX(), p.getY());

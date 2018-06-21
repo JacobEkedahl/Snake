@@ -17,6 +17,14 @@ and open the template in the editor.
     -fx-opacity: 50%; /* the same, with explicit opacity of 1 */
 }
 
+#Game:hover {
+    -fx-opacity: 50%; /* the same, with explicit opacity of 1 */
+}
+
+#Snake:hover {
+    -fx-opacity: 50%; /* the same, with explicit opacity of 1 */
+}
+
 .label {
     -fx-background-radius: 15 15 15 15;
     -fx-background-color: #444b4b; 

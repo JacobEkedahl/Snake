@@ -145,7 +145,7 @@ public class Game {
         }
     }
 
-    private void generateRandomApple() {
+    private synchronized void generateRandomApple() {
         Position pos = getSingleFreePos(null);
         Apple newApple = new Apple(pos.getX(), pos.getY());
         apples.add(newApple);
@@ -164,7 +164,7 @@ public class Game {
         return true;
     }
 
-    private ArrayList<Position> safePositions() {
+    private synchronized ArrayList<Position> safePositions() {
         ArrayList<Position> safePos = (ArrayList<Position>) board.clone();
         ArrayList<Position> snakePos = snake.getPosition();
         snakePos.remove(snake.getHeadPosition());
