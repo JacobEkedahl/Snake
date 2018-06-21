@@ -111,7 +111,7 @@ public class Game {
         return false;
     }
 
-    private Position getSingleFreePos(Position firstHole) {
+    private synchronized Position getSingleFreePos(Position firstHole) {
         ArrayList<Position> freePos = getFreePos(snake.getPosition());
         freePos.remove(firstHole);
         int size = freePos.size();
