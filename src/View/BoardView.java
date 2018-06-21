@@ -70,10 +70,10 @@ import javax.swing.JFrame;
  * @author Jacob
  */
 public class BoardView extends Application {
-    
+
     //standard settings for the settings
-    private static int SCREEN_WIDTH_SETTINGS = 550;
-    private static int SCREEN_HEIGHT_SETTINGS = 700;
+    private static int SCREEN_WIDTH_SETTINGS = 540;
+    private static int SCREEN_HEIGHT_SETTINGS = 600;
 
     //standard settings for the game
     private static int SIZE_SNAKE = 10;
@@ -133,6 +133,7 @@ public class BoardView extends Application {
     private int heightBox, widthBox;
 
     //view controlers
+    private Rectangle settingsFrame;
     private Region leftInfo, rightInfo;
     private HBox gameInfoBox;
     private Rectangle frame;
@@ -433,11 +434,28 @@ public class BoardView extends Application {
         btn.setOnMouseClicked(new SettingSubmit());
         btn.setFocusTraversable(false);
         VBox vbox = new VBox(startPane, btn);
-        vbox.setPadding(new Insets(15, 12, 15, 12));
+        vbox.setPadding(new Insets(BORDERSIZE, 0, 60, BORDERSIZE));
         vbox.setSpacing(10);
         vbox.setAlignment(Pos.CENTER);
 
         startGroup = new Group(vbox);
+
+    }
+
+    private void addRectToGroup(Node node) {
+        if (node instanceof Group) {
+            Group group = (Group) node;
+            System.out.println("");
+            VBox vbox = (VBox) group.getChildren().get(0);
+            double height = startPane.getHeight();
+            double width = startPane.getWidth();
+            System.out.println("width: " + width + "height: " + height);
+            VBox parent = (VBox) startPane.getParent();
+
+            Rectangle rect = new Rectangle(width + (BORDERSIZE * 2), height + (BORDERSIZE * 2), Color.BLACK);
+            startGroup.getChildren().add(rect);
+            vbox.toFront();
+        }
     }
 
     private void initControllLabels(VBox controllBox) {
@@ -600,25 +618,26 @@ public class BoardView extends Application {
         initBoard();
         initStart();
         initHBox();
-        mainPane.setCenter(startGroup); //startGroup
-        updateScreenSize();
+        updateScreenSize(SCREEN_WIDTH_SETTINGS, SCREEN_HEIGHT_SETTINGS, 0);
+        mainPane.setCenter(startGroup);
         primaryStage.show();
-    }
-    
-    public void screenSizeSettings() {
-        primaryStage.setHeight(SCREEN_WIDTH_SETTINGS);
-        primaryStage.setHeight(SCREEN_HEIGHT_SETTINGS);
+        addRectSettings();
     }
 
-    public void updateScreenSize() {
+    public void updateScreenSize(int width, int height, int bottomMenuHeight) {
         mainPane = new BorderPane();
-        mainPane.setCenter(startGroup); //startGroup
-        Scene scene = new Scene(mainPane, screenWidth + (BORDERSIZE * 2), screenHeight + (BORDERSIZE * 2) + GAME_INFO_HEIGHT);
+        mainPane.setCenter(null); //startGroup
+        Scene scene = new Scene(mainPane, width + (BORDERSIZE * 2), height + (BORDERSIZE * 2) + bottomMenuHeight);
         scene.setOnKeyPressed(new GameInteraction());
         scene.setOnMouseClicked(new ClickInteraction());
+        primaryStage.sizeToScene();
         primaryStage.setTitle("Snake");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
+    }
+
+    public void addRectSettings() {
+        addRectToGroup(startGroup);
     }
 
     public void updateLabel(Label label, String text) {
@@ -761,7 +780,7 @@ public class BoardView extends Application {
             } else if (event.getCode() == KeyCode.DOWN) {
                 game.decreaseSpeed(INCREASE_SPEED);
             } else if (event.getCode() == KeyCode.valueOf(restartKey)) {
-                updateScreenSize();
+                updateScreenSize(screenWidth, screenHeight, GAME_INFO_HEIGHT);
                 game.init();
                 clearWormholeInfo();
                 initBoard();
