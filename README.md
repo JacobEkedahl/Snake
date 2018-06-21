@@ -1,4 +1,4 @@
 # Snake
 Simple snake game, javafx, MVC
 
-https://github.com/JacobEkedahl/Snake/blob/master/preview/snakeGame.png
+[![Alt text for your video](https://github.com/JacobEkedahl/Snake/blob/master/preview/snakeGame.png)]
