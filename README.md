@@ -1,4 +1,4 @@
 # Snake
 Simple snake game, javafx, MVC
 
-https://raw.github.com/JacobEkedahl/Snake/preview/snakeGame.png
+https://github.com/JacobEkedahl/Snake/preview/snakeGame.png
