@@ -8,12 +8,10 @@ and open the template in the editor.
     Author     : Jacob
 */
 
-.button {
-    -fx-background-color: #444b4b;
-    -fx-text-fill: white;
+.label {
+    -fx-font-weight: bold;
 }
 
-.button:hover {
-    -fx-font-weight: bold;
-    -fx-background-color: #161919; 
+#info_lbl {
+    -fx-text-fill: red;
 }

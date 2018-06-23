@@ -11,10 +11,11 @@ package Model;
  */
 public class Result {
     private int time, sizeSnake;
+    private static int multiplier = 30;
 
     public Result(int time, int sizeSnake) {
         this.time = time;
-        this.sizeSnake = sizeSnake;
+        this.sizeSnake = sizeSnake * multiplier;
     }
 
     public int getTime() {
@@ -30,7 +31,7 @@ public class Result {
     }
 
     public void setSizeSnake(int sizeSnake) {
-        this.sizeSnake = sizeSnake;
+        this.sizeSnake = sizeSnake * multiplier;
     }
     
     

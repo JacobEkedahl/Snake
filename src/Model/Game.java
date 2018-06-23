@@ -22,6 +22,8 @@ public class Game {
 
     private static boolean START = true;
     private static boolean DONT_START = false;
+    private static int repeatTime = 10;
+    public static int RESET_TIME = -10;
 
     private boolean randomWormhole;
     private int intervalWormhole;
@@ -43,6 +45,9 @@ public class Game {
     private int snakeSize, width, height;
     private int wormholeInterval;
     private int maxWormholes;
+    
+    private int level;
+    private int timeToNext = repeatTime;
 
     public Game(int snakeSize, int width, int height, int speed, double percentageIncrease,
             int intervalWormhole, int wormholeInterval, boolean randomWormhole, int maxWormholes, BoardView view) {
@@ -56,6 +61,8 @@ public class Game {
         this.width = width;
         this.height = height;
         this.view = view;
+        this.level = 1;
+        this.timeToNext = repeatTime;
     }
 
     /**
@@ -70,6 +77,9 @@ public class Game {
         apples = new ArrayList<>();
         wormholes = new ArrayList<>();
         initBoard(width, height);
+        this.level = 1;
+        this.timeToNext = repeatTime;
+        view.updateScore();
     }
 
     public void start() {
@@ -154,6 +164,7 @@ public class Game {
     private void eatApple(Position p) {
         snake.eatApple(p);
         apples.remove(p);
+        view.updateScore();
     }
 
     private boolean headDeadColision() {
@@ -312,13 +323,31 @@ public class Game {
         resetTimerTime();
         view.showGameOver();
     }
-
+    
+    public int getTimeToNext() {
+        return timeToNext;
+    }
+    
+    private void increaseLevel() {
+        level++;
+    }
+    
+    public int getLevel() {
+        return level;
+    }
+    
     private void setupTimeTask() {
         timeTask = new TimerTask() {
             @Override
             public void run() {
-                if (time % 5 == 0) {
+                if (timeToNext == 0) {
+                    timeToNext = RESET_TIME;
                     increaseSpeed(percentageIncrease);
+                    increaseLevel();
+                } else if (timeToNext == RESET_TIME) {
+                    timeToNext = repeatTime;
+                } else  {
+                    timeToNext--;
                 }
 
                 if (randomWormhole) {
@@ -336,6 +365,8 @@ public class Game {
                         }
                     }
                 }
+                
+                view.updateResult();
                 time += 1;
             }
         };

@@ -8,12 +8,16 @@ and open the template in the editor.
     Author     : Jacob
 */
 
-.button {
-    -fx-background-color: #444b4b;
-    -fx-text-fill: white;
+.pane {
+    -fx-background-position: center;
+    -fx-background-color: #ffffff;
 }
 
-.button:hover {
+.label {
+    -fx-font-size: 30;
     -fx-font-weight: bold;
-    -fx-background-color: #161919; 
+}
+
+.gridpane {
+    -fx-grid-lines-visible: true;
 }

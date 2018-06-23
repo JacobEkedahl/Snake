@@ -423,9 +423,7 @@ public class BoardView extends Application {
         vbox.setPadding(new Insets(BORDERSIZE, 0, 60, BORDERSIZE));
         vbox.setSpacing(10);
         vbox.setAlignment(Pos.CENTER);
-
         startGroup = new Group(vbox);
-
     }
 
     private void addRectToGroup(Node node) {
@@ -513,6 +511,35 @@ public class BoardView extends Application {
         initWormholeInfo();
         initGameInfo();
         gameInfoBox.getChildren().addAll(wormholes_box, leftInfo, timeAndSpeed_info);
+        gameInfoBox.getStylesheets().add("bottomview.css");
+    }
+
+    public void updateResult() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                int next = game.getTimeToNext();
+                int level = game.getLevel();
+                String nextInfo = "";
+                if (next == game.RESET_TIME) {
+                    nextInfo = "!";
+                } else {
+                    nextInfo = "" + next;
+                }
+                timefornextspeed_lbl.setText(nextInfo);
+                currentspeed_lbl.setText(String.valueOf(level));
+            }
+        });
+    }
+
+    public void updateScore() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                int score = game.getResult().getSizeSnake();
+                currentscore_lbl.setText(String.valueOf(score));
+            }
+        });
     }
 
     private void initGameInfo() {
@@ -520,10 +547,22 @@ public class BoardView extends Application {
         timeAndSpeed_info.setPadding(new Insets(15, 12, 15, 12));
         timeAndSpeed_info.setSpacing(10);
         timeAndSpeed_info.setStyle("-fx-background-color: #e4fbfd;");
-        timefornextspeed_lbl = new Label("Hello");
-        currentscore_lbl = new Label("there");
-        currentspeed_lbl = new Label(":)");
-        timeAndSpeed_info.getChildren().addAll(timefornextspeed_lbl, currentscore_lbl, currentspeed_lbl);
+
+        Label nextLbl = new Label("NEXT LEVEL: ");
+        timefornextspeed_lbl = new Label("");
+        timefornextspeed_lbl.setId("info_lbl");
+        HBox nextBox = new HBox(nextLbl, timefornextspeed_lbl);
+
+        Label scoreLbl = new Label("SCORE: ");
+        currentscore_lbl = new Label("");
+        currentscore_lbl.setId("info_lbl");
+        HBox scoreBox = new HBox(scoreLbl, currentscore_lbl);
+
+        Label speedLbl = new Label("LEVEL: ");
+        currentspeed_lbl = new Label("");
+        currentspeed_lbl.setId("info_lbl");
+        HBox speedBox = new HBox(speedLbl, currentspeed_lbl);
+        timeAndSpeed_info.getChildren().addAll(nextBox, scoreBox, speedBox);
     }
 
     private void initWormholeInfo() {
