@@ -65,19 +65,14 @@ public class Controller {
             game.generateFixedWormhole(clickedPos);
         }
     }
-
-    public void changeKey(KeyEvent event) {
-        if (settingView.isLabelSelected()) {
-            settingView.setLabel(event.getCode().getName().toUpperCase());
-        }
-    }
-
+    
     public void userInteraction(KeyEvent event) {
+        //if user has selected a label to change (left, right or restart controller)
         if (settingView.isLabelSelected()) {
             String keySelected = event.getCode().getName().toUpperCase();
             settingView.setLabel(keySelected);
+        //ingame functions
         } else if (event.getCode() == KeyCode.valueOf(boardView.getLeftKey())) {
-            System.out.println(KeyCode.S);
             game.goLeft();
         } else if (event.getCode() == KeyCode.valueOf(boardView.getRightKey())) {
             game.goRight();

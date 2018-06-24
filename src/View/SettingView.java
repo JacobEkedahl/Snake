@@ -166,7 +166,7 @@ public class SettingView {
         controllBox.setStyle("-fx-background-color: #e4fbfd");
         controllBox.setPadding(new Insets(15, 12, 15, 12));
         initControllLabels(controllBox);
-        controllBox.getStylesheets().add("controlls.css");
+        controllBox.getStylesheets().add("css/controlls.css");
 
         startPane.add(infoBox, 1, 1); //col, row
         startPane.add(controllBox, 2, 1);
@@ -174,13 +174,12 @@ public class SettingView {
         Button btn = new Button(buttonApply);
         btn.setOnMouseClicked(new SettingView.SettingSubmit());
         btn.setFocusTraversable(false);
-        btn.getStylesheets().add("settings.css");
+        btn.getStylesheets().add("css/settings.css");
         VBox vbox = new VBox(startPane, btn);
         vbox.setPadding(new Insets(Settings.BORDERSIZE, 0, 60, Settings.BORDERSIZE));
         vbox.setSpacing(10);
         vbox.setAlignment(Pos.CENTER);
         startGroup = new Group(vbox);
-        startGroup.setOnKeyPressed(new SettingView.ChangeKeyInteraction());
     }
 
     private Color getColorFromMap(String id) {
@@ -337,14 +336,6 @@ public class SettingView {
             if (!input.equals("")) {
                 label.setText(input);
             }
-        }
-    }
-    
-    private class ChangeKeyInteraction implements EventHandler<KeyEvent> {
-        
-        @Override
-        public void handle(KeyEvent event) {
-            controller.changeKey(event);
         }
     }
 

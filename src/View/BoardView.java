@@ -97,7 +97,7 @@ public class BoardView extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
-        primaryStage.getIcons().add(new Image("snakeIcon.png"));
+        primaryStage.getIcons().add(new Image("img/icon.png"));
         settings = new Settings();
         setupGame();
         controller = new Controller(game, converter);
@@ -256,7 +256,7 @@ public class BoardView extends Application {
         Group group = new Group(resultView);
         resultGroup = new BorderPane();
         resultGroup.setCenter(group);
-        resultGroup.getStylesheets().add("result.css");
+        resultGroup.getStylesheets().add("css/result.css");
         BorderStroke stroke = new BorderStroke(Color.BLACK,
                 BorderStrokeStyle.SOLID, CornerRadii.EMPTY,
                 new BorderWidths(3));

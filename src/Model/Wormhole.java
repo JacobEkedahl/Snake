@@ -32,7 +32,7 @@ public class Wormhole {
         directionOfSnake = 0;
         this.timeToLive = timeToLive;
     }
-    
+
     public int getTimeToLive() {
         return timeToLive;
     }
@@ -92,20 +92,7 @@ public class Wormhole {
 
     public void redirect() {
         if (sizeOfSnake > 0) {
-            switch (directionOfSnake) {
-                case Snake.NORTH:
-                    snake.getSnakePiece(indexOfSnake++).setPos(exit.up());
-                    break;
-                case Snake.EAST:
-                    snake.getSnakePiece(indexOfSnake++).setPos(exit.right());
-                    break;
-                case Snake.SOUTH:
-                    snake.getSnakePiece(indexOfSnake++).setPos(exit.down());
-                    break;
-                case Snake.WEST:
-                    snake.getSnakePiece(indexOfSnake++).setPos(exit.left());
-                    break;
-            }
+            snake.getSnakePiece(indexOfSnake++).setPos(exit.getPos());
             sizeOfSnake--;
             System.out.println("new snake: " + snake.toString());
         } else {
@@ -130,20 +117,9 @@ public class Wormhole {
             this.pos = pos;
         }
 
-        public Position up() {
-            return new Position(pos.getX(), pos.getY());
-        }
-
-        public Position right() {
-            return new Position(pos.getX(), pos.getY());
-        }
-
-        public Position down() {
-            return new Position(pos.getX(), pos.getY());
-        }
-
-        public Position left() {
-            return new Position(pos.getX(), pos.getY());
+        @Override
+        public String toString() {
+            return "Hole{" + "pos=" + pos + '}';
         }
     }
 }

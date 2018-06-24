@@ -133,7 +133,7 @@ public class BoardInfo {
         initWormholeInfo();
         initGameInfo();
         gameInfoBox.getChildren().addAll(wormholes_box, leftInfo, timeAndSpeed_info);
-        gameInfoBox.getStylesheets().add("bottomview.css");
+        gameInfoBox.getStylesheets().add("css/bottomview.css");
     }
 
     private void initGameInfo() {
