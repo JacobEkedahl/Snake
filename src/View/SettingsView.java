@@ -71,9 +71,9 @@ public class SettingsView {
     private Controller controller;
     private Settings settings;
     
-    public SettingsView(Controller controller, Settings settings) {
+    public SettingsView(Controller controller) {
         this.controller = controller;
-        this.settings = settings;
+        this.settings = Settings.getInstance();
         initStart();
     }
     

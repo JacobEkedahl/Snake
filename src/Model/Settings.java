@@ -28,7 +28,7 @@ public class Settings {
     private final static int MAX_WORMHOLES = 5;
     private final static boolean RANDOM_WORMHOLES = true;
     private final static boolean FIXED_WORMHOLES = false;
-    
+
     //colors of elements in game
     private final static Color WORMHOLE_COLOR = Color.BLUEVIOLET;
     private final static Color APPLE_COLOR = Color.GREEN;
@@ -46,30 +46,14 @@ public class Settings {
     private boolean randomWormholes, fixedWormholes;
     private Color wormholeColor, appleColor, gameColor, snakeColor;
 
-    public Settings() {
-        initStandardSettings();
+    private static final Settings instance = new Settings();
+
+    public static Settings getInstance() {
+        return instance;
     }
 
-    public Settings(int sizeSnake, int width, int height, int speed, int timetolive, int interval, int maxwormholes, int screenWidth, int screenHeight, String leftKey, String rightKey, String restartKey, double percentageIncrease, boolean randomWormholes, boolean fixedWormholes, Color wormholeColor, Color appleColor, Color gameColor, Color snakeColor) {
-        this.sizeSnake = sizeSnake;
-        this.width = width;
-        this.height = height;
-        this.speed = speed;
-        this.timetolive = timetolive;
-        this.interval = interval;
-        this.maxwormholes = maxwormholes;
-        this.screenWidth = screenWidth;
-        this.screenHeight = screenHeight;
-        this.leftKey = leftKey;
-        this.rightKey = rightKey;
-        this.restartKey = restartKey;
-        this.percentageIncrease = percentageIncrease;
-        this.randomWormholes = randomWormholes;
-        this.fixedWormholes = fixedWormholes;
-        this.wormholeColor = wormholeColor;
-        this.appleColor = appleColor;
-        this.gameColor = gameColor;
-        this.snakeColor = snakeColor;
+    private Settings() {
+        initStandardSettings();
     }
 
     public static String getButtonLeft() {
@@ -235,8 +219,6 @@ public class Settings {
     public void setSnakeColor(Color snakeColor) {
         this.snakeColor = snakeColor;
     }
-    
-    
 
     private void initStandardSettings() {
         leftKey = buttonLeft;

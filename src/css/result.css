@@ -8,11 +8,6 @@ and open the template in the editor.
     Author     : Jacob
 */
 
-.pane {
-    -fx-background-position: center;
-    -fx-background-color: #ffffff;
-}
-
 .label {
     -fx-font-size: 30;
     -fx-font-weight: bold;

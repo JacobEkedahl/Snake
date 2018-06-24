@@ -98,7 +98,7 @@ public class BoardView extends Application {
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         primaryStage.getIcons().add(new Image("img/icon.png"));
-        settings = new Settings();
+        settings = Settings.getInstance();
         setupGame();
         controller = new Controller(game, converter);
         initView(primaryStage);
@@ -291,7 +291,7 @@ public class BoardView extends Application {
     }
 
     private void initView(Stage primaryStage) {
-        settingView = new SettingsView(controller, settings);
+        settingView = new SettingsView(controller);
         boardInfo = new BoardInfo(controller, settings.getWormholeColor());
         resultView = new ResultView();
         mainPane = new BorderPane();
