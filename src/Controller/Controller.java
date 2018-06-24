@@ -10,7 +10,7 @@ import Model.Game;
 import Model.Position;
 import View.BoardInfo;
 import View.BoardView;
-import View.SettingView;
+import View.SettingsView;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Node;
@@ -28,7 +28,7 @@ public class Controller {
 
     private Game game;
     private BoardView boardView;
-    private SettingView settingView;
+    private SettingsView settingView;
     private BoardInfo boardInfo;
 
     private Converter converter;
@@ -38,7 +38,7 @@ public class Controller {
         this.converter = converter;
     }
 
-    public void addViews(BoardInfo boardInfo, SettingView settingView, BoardView boardView) {
+    public void addViews(BoardInfo boardInfo, SettingsView settingView, BoardView boardView) {
         this.boardInfo = boardInfo;
         this.settingView = settingView;
         this.boardView = boardView;

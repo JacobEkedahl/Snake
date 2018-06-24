@@ -35,7 +35,7 @@ import javafx.stage.Stage;
  *
  * @author Jacob
  */
-public class SettingView {
+public class SettingsView {
 
     //standard settings for the settings
     private static int SCREEN_WIDTH_SETTINGS = 540;
@@ -71,7 +71,7 @@ public class SettingView {
     private Controller controller;
     private Settings settings;
     
-    public SettingView(Controller controller, Settings settings) {
+    public SettingsView(Controller controller, Settings settings) {
         this.controller = controller;
         this.settings = settings;
         initStart();
@@ -157,7 +157,7 @@ public class SettingView {
         startPane.add(controllBox, 2, 1);
 
         Button btn = new Button(buttonApply);
-        btn.setOnMouseClicked(new SettingView.SettingSubmit());
+        btn.setOnMouseClicked(new SettingsView.SettingSubmit());
         btn.setFocusTraversable(false);
         btn.getStylesheets().add("css/settings.css");
         VBox vbox = new VBox(startPane, btn);
@@ -264,12 +264,12 @@ public class SettingView {
     private void helpInitControlls(Node node, VBox controllBox, String id) {
         if (node instanceof Label) {
             Label label = (Label) node;
-            label.setOnMouseClicked(new SettingView.SettingInteraction());
+            label.setOnMouseClicked(new SettingsView.SettingInteraction());
             label.setPrefWidth(200);
             controllBox.getChildren().add(label);
         } else if (node instanceof Rectangle) {
             Rectangle rect = (Rectangle) node;
-            rect.setOnMouseClicked(new SettingView.SettingInteraction());
+            rect.setOnMouseClicked(new SettingsView.SettingInteraction());
             controllBox.getChildren().add(rect);
         } else if (node instanceof HBox) {
             HBox rect = (HBox) node;

@@ -75,8 +75,6 @@ public class BoardView extends Application {
     private BorderPane mainPane;
     private GridPane boardPane;
     private Group boardGroup;
-    private TilePane resultView;
-    private BorderPane resultGroup;
     private Label timeLbl;
     private Label scoreLbl;
     private Game game;
@@ -92,7 +90,8 @@ public class BoardView extends Application {
     Stage primaryStage;
 
     private BoardInfo boardInfo;
-    private SettingView settingView;
+    private SettingsView settingView;
+    private ResultView resultView;
     private Settings settings;
 
     @Override
@@ -204,9 +203,8 @@ public class BoardView extends Application {
             public void run() {
                 //show text game over, time, and size of snake
                 Result res = game.getResult();
-                timeLbl.setText("Time: " + res.getTime() + " seconds");
-                scoreLbl.setText("Score: " + res.getSizeSnake());
-                mainPane.setCenter(resultGroup);
+                resultView.gameOver(res);
+                mainPane.setCenter(resultView.getPane());
                 mainPane.setBottom(null);
             }
         });
@@ -245,24 +243,6 @@ public class BoardView extends Application {
     
     public String getRestartKey() {
         return settings.getRestartKey();
-    }
-
-    private void initResult() {
-        resultView = new TilePane(Orientation.VERTICAL);
-        resultView.setPrefRows(3);
-        Label gameOverLbl = new Label("GAME OVER");
-        scoreLbl = new Label("test");
-        timeLbl = new Label("test");
-        resultView.getChildren().addAll(gameOverLbl, scoreLbl, timeLbl);
-        Group group = new Group(resultView);
-        resultGroup = new BorderPane();
-        resultGroup.setCenter(group);
-        resultGroup.getStylesheets().add("css/result.css");
-        BorderStroke stroke = new BorderStroke(Color.BLACK,
-                BorderStrokeStyle.SOLID, CornerRadii.EMPTY,
-                new BorderWidths(3));
-        Border border = new Border(stroke);
-        resultGroup.setBorder(border);
     }
 
     public void initBoard() {
@@ -310,10 +290,10 @@ public class BoardView extends Application {
     }
 
     private void initView(Stage primaryStage) {
-        settingView = new SettingView(controller, settings);
+        settingView = new SettingsView(controller, settings);
         boardInfo = new BoardInfo(settings.getWormholeColor());
+        resultView = new ResultView();
         mainPane = new BorderPane();
-        initResult();
         initBoard();
         changeSizeToSettings();
         mainPane.setCenter(settingView.getGroup());
