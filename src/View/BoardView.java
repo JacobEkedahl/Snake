@@ -232,19 +232,6 @@ public class BoardView extends Application {
         });
     }
     
-    //called by the controller so it listens to the keys in the settings
-    public String getLeftKey() {
-        return settings.getLeftKey();
-    }
-    
-    public String getRightKey() {
-        return settings.getRightKey();
-    }
-    
-    public String getRestartKey() {
-        return settings.getRestartKey();
-    }
-
     public void initBoard() {
         boardGroup = new Group();
         boardPane = new GridPane();
