@@ -5,14 +5,21 @@
  */
 package View;
 
+import Controller.Controller;
+import Model.Converter;
 import Model.Settings;
 import Model.Wormhole;
 import java.util.ArrayList;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -34,15 +41,29 @@ public class BoardInfo {
     private Label timefornextspeed_lbl;
     private Label currentscore_lbl;
     private Label currentspeed_lbl;
+    private ImageView settingImage;
     private int currentSizeWormholes = 0;
 
     private Color wormholeColor;
 
     private HBox gameInfoBox;
 
-    public BoardInfo(Color wormholeColor) {
+    private Controller controller;
+
+    public BoardInfo(Controller controller, Color wormholeColor) {
+        this.controller = controller;
         initGameInfoBox();
         setWormholeColor(wormholeColor);
+    }
+
+    public void resultVersion() {
+        wormholes_box.setVisible(false);
+        timeAndSpeed_info.setVisible(false);
+    }
+
+    public void gameVersion() {
+        wormholes_box.setVisible(true);
+        timeAndSpeed_info.setVisible(true);
     }
 
     public HBox getGameInfoBox() {
@@ -50,7 +71,7 @@ public class BoardInfo {
     }
 
     public void setWormholeColor(Color wormholeColor) {
-         this.wormholeColor = wormholeColor;
+        this.wormholeColor = wormholeColor;
     }
 
     public void showInfoWormholes(ArrayList<Wormhole> tmpWormholes) {
@@ -69,14 +90,14 @@ public class BoardInfo {
             showWormholeInfo(i, tmpWormholes.get(i).getTimeToLive());
         }
     }
-    
+
     public void clearWormholeInfo() {
         wormholes_box.getChildren().clear();
         currentSizeWormholes = 0;
         wormholes_info.clear();
         wormholes_lbl.clear();
     }
-    
+
     private void showWormholeInfo(int index, int timeToLive) {
         Platform.runLater(new Runnable() {
             @Override
@@ -127,12 +148,31 @@ public class BoardInfo {
         gameInfoBox.setSpacing(10);
         gameInfoBox.setStyle("-fx-background-color: #e4fbfd;");
         gameInfoBox.setPrefHeight(Settings.GAME_INFO_HEIGHT);
+
+        //regions that give spacing between the elements in gameinfobox
         Region leftInfo = new Region();
         HBox.setHgrow(leftInfo, Priority.ALWAYS);
+        Region rightInfo = new Region();
+        HBox.setHgrow(rightInfo, Priority.ALWAYS);
+
+        initSettingBtn();
         initWormholeInfo();
         initGameInfo();
-        gameInfoBox.getChildren().addAll(wormholes_box, leftInfo, timeAndSpeed_info);
+        gameInfoBox.getChildren().addAll(wormholes_box, leftInfo, settingImage, rightInfo, timeAndSpeed_info);
         gameInfoBox.getStylesheets().add("css/bottomview.css");
+    }
+
+    private void initSettingBtn() {
+        settingImage = new ImageView();
+        Image image = new Image("img/settings_img.png");
+        settingImage.setImage(image);
+        settingImage.setId("setting_btn");
+
+        settingImage.setFitWidth(Converter.getHeightSettingButton());
+        settingImage.setPreserveRatio(true);
+        settingImage.setSmooth(true);
+        settingImage.setCache(true);
+        settingImage.setOnMouseClicked(new BoardInfo.SelectSettings());
     }
 
     private void initGameInfo() {
@@ -156,13 +196,16 @@ public class BoardInfo {
         currentspeed_lbl.setId("info_lbl");
         HBox speedBox = new HBox(speedLbl, currentspeed_lbl);
         timeAndSpeed_info.getChildren().addAll(scoreBox, nextBox, speedBox);
+        timeAndSpeed_info.setPrefWidth(Converter.getWidthInfoBox());
+        timeAndSpeed_info.setAlignment(Pos.BASELINE_RIGHT);
     }
 
     private void initWormholeInfo() {
         wormholes_box = new HBox();
-        wormholes_box.setPadding(new Insets(0, 12, 0, 12));
+        wormholes_box.setPadding(new Insets(5, 12, 0, 12));
         wormholes_box.setSpacing(10);
         wormholes_box.setStyle("-fx-background-color: #e4fbfd;");
+        wormholes_box.setPrefWidth(Converter.getWidthInfoBox());
     }
 
     public void addWormholeInfo() {
@@ -175,5 +218,14 @@ public class BoardInfo {
         wormholes_info.add(wormhole);
         wormholes_lbl.add(wormhole_lbl);
         wormholes_box.getChildren().add(wormhole);
+    }
+
+    private class SelectSettings implements EventHandler<MouseEvent> {
+
+        @Override
+        public void handle(MouseEvent event) {
+            controller.goToSettings();
+        }
+
     }
 }

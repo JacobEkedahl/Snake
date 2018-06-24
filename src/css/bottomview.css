@@ -12,6 +12,18 @@ and open the template in the editor.
     -fx-font-weight: bold;
 }
 
+.label:hover {
+    -fx-font-weight: normal;
+}
+
 #info_lbl {
     -fx-text-fill: red;
+}
+
+#setting_btn {
+    -fx-image: url("/img/settings_img.png");
+}
+
+#setting_btn:hover {
+    -fx-image: url("/img/settings_img_pressed.png");
 }

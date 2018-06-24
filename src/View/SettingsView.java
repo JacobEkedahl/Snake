@@ -314,7 +314,7 @@ public class SettingsView {
         dialog.setGraphic(null);
         Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
         stage.getIcons().add(
-                new Image("snakeIcon.png"));
+                new Image("/img/icon.png"));
         Optional<String> result = dialog.showAndWait();
 
         if (result.isPresent()) {

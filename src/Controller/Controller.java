@@ -37,6 +37,11 @@ public class Controller {
         game = sharedGame;
         this.converter = converter;
     }
+    
+    public void goToSettings() {
+        boardView.goToSettings();
+        System.out.println("SEttings!");
+    }
 
     public void addViews(BoardInfo boardInfo, SettingsView settingView, BoardView boardView) {
         this.boardInfo = boardInfo;

@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class Converter {
 
-    private int widthScreen, heightScreen, width, height, gameInfoHeight;
+    private static int widthScreen, heightScreen, width, height, gameInfoHeight;
 
     public Converter(int widthScreen, int heightScreen, int width, int height, int gameInfoHeight) {
         this.widthScreen = widthScreen;
@@ -38,6 +38,14 @@ public class Converter {
         } else {
             return "NO";
         }
+    }
+    
+    public static int getHeightSettingButton() {
+        return gameInfoHeight - (Settings.BORDERSIZE);
+    }
+    
+    public static int getWidthInfoBox() {
+        return (widthScreen - (Settings.BORDERSIZE * 2) - getHeightSettingButton() / 2);
     }
     
     public static String intToStr(int integer) {

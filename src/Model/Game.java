@@ -314,10 +314,14 @@ public class Game {
 
         setupTimeTask();
     }
-
-    private void gameOver() {
+    
+    public void pauseGame() {
         resetTimerGame(DONT_START);
         resetTimerTime();
+    }
+
+    private void gameOver() {
+        pauseGame();
         view.showGameOver();
     }
 

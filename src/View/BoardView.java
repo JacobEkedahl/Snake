@@ -205,7 +205,7 @@ public class BoardView extends Application {
                 Result res = game.getResult();
                 resultView.gameOver(res);
                 mainPane.setCenter(resultView.getPane());
-                mainPane.setBottom(null);
+                boardInfo.resultVersion();
             }
         });
     }
@@ -271,6 +271,7 @@ public class BoardView extends Application {
     public void showBoard() {
         mainPane.setCenter(boardGroup);
         mainPane.setBottom(boardInfo.getGameInfoBox());
+        boardInfo.gameVersion();
     }
 
     public void updateBoardSize() {
@@ -291,7 +292,7 @@ public class BoardView extends Application {
 
     private void initView(Stage primaryStage) {
         settingView = new SettingsView(controller, settings);
-        boardInfo = new BoardInfo(settings.getWormholeColor());
+        boardInfo = new BoardInfo(controller, settings.getWormholeColor());
         resultView = new ResultView();
         mainPane = new BorderPane();
         initBoard();
@@ -323,6 +324,13 @@ public class BoardView extends Application {
         primaryStage.setTitle("Snake");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
+    }
+    
+    public void goToSettings() {
+        game.pauseGame();
+        changeSizeToSettings();
+        mainPane.setCenter(settingView.getGroup());
+        mainPane.setBottom(null);
     }
 
     private class GameInteraction implements EventHandler<KeyEvent> {
