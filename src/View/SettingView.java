@@ -7,7 +7,7 @@ package View;
 
 import Controller.Controller;
 import Model.Converter;
-import static View.BoardView.GAME_INFO_HEIGHT;
+import Model.Settings;
 import java.util.HashMap;
 import java.util.Optional;
 import javafx.event.ActionEvent;
@@ -22,6 +22,7 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -39,22 +40,6 @@ public class SettingView {
     //standard settings for the settings
     private static int SCREEN_WIDTH_SETTINGS = 540;
     private static int SCREEN_HEIGHT_SETTINGS = 600;
-
-    //standard settings for the game
-    private static int SIZE_SNAKE = 10;
-    private static int SPEED = 150;
-    private static int WIDTH = 40;
-    private static int HEIGHT = 40;
-    private static int SCREEN_WIDTH = 600;
-    private static int SCREEN_HEIGHT = 800;
-    public static int GAME_INFO_HEIGHT = 50;
-    private static double INCREASE_SPEED = 0.95;
-    private static int BORDERSIZE = 3;
-    private static int WORMHOLE_TIMETOLIVE = 30;
-    private static int WORMHOLE_INTERVAL = 1;
-    private static int MAX_WORMHOLES = 5;
-    private static boolean RANDOM_WORMHOLES = true;
-    private static boolean FIXED_WORMHOLES = false;
 
     //description of what to change and the id of the controlnodes
     private static final String controlLeft = "Left";
@@ -79,11 +64,11 @@ public class SettingView {
     private static final String buttonLeft = "S";
     private static final String buttonRight = "D";
     private static final String buttonRestart = "SPACE";
-    private static final String buttonRandom = "NO";
-    private static final String buttonInterval = "10";
+    private static final String buttonRandom = "YES";
+    private static final String buttonInterval = "1";
     private static final String buttonFixed = "YES";
     private static final String buttonLifespan = "10";
-    private static final String buttonLimit = "1";
+    private static final String buttonLimit = "5";
     private static final String buttonGameWidth = "40";
     private static final String buttonGameHeight = "40";
     private static final String buttonScreenWidth = "600";
@@ -94,23 +79,23 @@ public class SettingView {
     private Group startGroup;
     private GridPane startPane;
 
-    private int sizeSnake, width, height, speed, timetolive, interval, maxwormholes, screenWidth, screenHeight;
-    private String leftKey, rightKey, restartKey;
-    private double percentageIncrease;
-    private boolean randomWormholes, fixedWormholes;
-    private Color wormholeColor, appleColor, gameColor, snakeColor;
-
     //hashmap of references to the controlls in the settingsmenu (id is used to find the node)
     private HashMap<String, Node> controllNodes = new HashMap<>();
     private Label selectedLabel = null;
 
     private Controller controller;
+    private Settings settings;
     
-    public SettingView(Controller controller) {
+    public SettingView(Controller controller, Settings settings) {
         this.controller = controller;
+        this.settings = settings;
         initStart();
     }
-
+    
+    public Group getGroup() {
+        return startGroup;
+    }
+    
     public boolean isLabelSelected() {
         if (selectedLabel == null) {
             return false;
@@ -119,7 +104,7 @@ public class SettingView {
     }
 
     public boolean isFixedWormholes() {
-        return fixedWormholes;
+        return settings.isFixedWormholes();
     }
 
     public void setLabel(String key) {
@@ -129,21 +114,9 @@ public class SettingView {
     }
     
     public Color getWormholeColor() {
-        return wormholeColor;
+        return settings.getWormholeColor();
     }
     
-    public String getLeftKey() {
-        return leftKey;
-    }
-    
-    public String getRightKey() {
-        return rightKey;
-    }
-    
-    public String getRestartKey() {
-        return restartKey;
-    }
-
     public void chosedNode(Node node) {
         if (node instanceof Label) {
             Label label = (Label) node;
@@ -203,10 +176,11 @@ public class SettingView {
         btn.setFocusTraversable(false);
         btn.getStylesheets().add("settings.css");
         VBox vbox = new VBox(startPane, btn);
-        vbox.setPadding(new Insets(BORDERSIZE, 0, 60, BORDERSIZE));
+        vbox.setPadding(new Insets(Settings.BORDERSIZE, 0, 60, Settings.BORDERSIZE));
         vbox.setSpacing(10);
         vbox.setAlignment(Pos.CENTER);
         startGroup = new Group(vbox);
+        startGroup.setOnKeyPressed(new SettingView.ChangeKeyInteraction());
     }
 
     private Color getColorFromMap(String id) {
@@ -217,53 +191,29 @@ public class SettingView {
         return ((Label) controllNodes.get(id)).getText().toUpperCase();
     }
 
-    private void initStandardSettings() {
-        leftKey = buttonLeft;
-        rightKey = buttonRight;
-        restartKey = buttonRestart;
-
-        wormholeColor = Color.BLUE;
-        appleColor = Color.GREEN;
-        gameColor = Color.WHITE;
-        snakeColor = Color.BLACK;
-
-        sizeSnake = SIZE_SNAKE;
-        width = WIDTH;
-        height = HEIGHT;
-        speed = SPEED;
-        percentageIncrease = INCREASE_SPEED;
-        timetolive = WORMHOLE_TIMETOLIVE;
-        interval = WORMHOLE_INTERVAL;
-        maxwormholes = MAX_WORMHOLES;
-        screenWidth = SCREEN_WIDTH;
-        screenHeight = SCREEN_HEIGHT;
-        randomWormholes = RANDOM_WORMHOLES;
-        fixedWormholes = FIXED_WORMHOLES;
-    }
-
     public void setNewSettings() {
-        leftKey = getStringFromMap(controlLeft);
-        rightKey = getStringFromMap(controlRight);
-        restartKey = getStringFromMap(controlRestart);
+        settings.setLeftKey(getStringFromMap(controlLeft));
+        settings.setRightKey(getStringFromMap(controlRight));
+        settings.setRestartKey(getStringFromMap(controlRestart));
 
-        wormholeColor = getColorFromMap(titleWormhole);
-        appleColor = getColorFromMap(titleApple);
-        gameColor = getColorFromMap(titleScreen);
-        snakeColor = getColorFromMap(titleSnake);
-        sizeSnake = Integer.parseInt(getStringFromMap(infoSnakesize));
+        settings.setWormholeColor(getColorFromMap(titleWormhole));
+        settings.setAppleColor(getColorFromMap(titleApple));
+        settings.setGameColor(getColorFromMap(titleScreen));
+        settings.setSnakeColor(getColorFromMap(titleSnake));
+        settings.setSizeSnake(Integer.parseInt(getStringFromMap(infoSnakesize)));
 
-        width = Integer.parseInt(getStringFromMap(infoGameWidth));
-        height = Integer.parseInt(getStringFromMap(infoGameHeight));
-        screenWidth = Integer.parseInt(getStringFromMap(infoScreenWidth));
-        screenHeight = Integer.parseInt(getStringFromMap(infoScreenHeight));
-        percentageIncrease = INCREASE_SPEED;
-        speed = SPEED;
+        settings.setWidth(Integer.parseInt(getStringFromMap(infoGameWidth)));
+        settings.setHeight(Integer.parseInt(getStringFromMap(infoGameHeight)));
+        settings.setScreenWidth(Integer.parseInt(getStringFromMap(infoScreenWidth)));
+        settings.setScreenHeight(Integer.parseInt(getStringFromMap(infoScreenHeight)));
+        settings.setPercentageIncrease(Settings.INCREASE_SPEED);
+        settings.setSpeed(Settings.SPEED);
 
-        timetolive = Integer.parseInt(getStringFromMap(infoWormholeLifespan));
-        interval = Integer.parseInt(getStringFromMap(infoWormholeInterval));
-        maxwormholes = Integer.parseInt(getStringFromMap(infoWormholeLimit));
-        randomWormholes = Converter.strToBool(getStringFromMap(infoWormholeRandom));
-        fixedWormholes = Converter.strToBool(getStringFromMap(infoWormholeFixed));
+        settings.setTimetolive(Integer.parseInt(getStringFromMap(infoWormholeLifespan)));
+        settings.setInterval(Integer.parseInt(getStringFromMap(infoWormholeInterval)));
+        settings.setMaxwormholes(Integer.parseInt(getStringFromMap(infoWormholeLimit)));
+        settings.setRandomWormholes(Converter.strToBool(getStringFromMap(infoWormholeRandom)));
+        settings.setFixedWormholes(Converter.strToBool(getStringFromMap(infoWormholeFixed)));
     }
 
     private void addRectToGroup(Node node) {
@@ -276,7 +226,7 @@ public class SettingView {
             System.out.println("width: " + width + "height: " + height);
             VBox parent = (VBox) startPane.getParent();
 
-            Rectangle rect = new Rectangle(width + (BORDERSIZE * 2), height + (BORDERSIZE * 2), Color.BLACK);
+            Rectangle rect = new Rectangle(width + (Settings.BORDERSIZE * 2), height + (Settings.BORDERSIZE * 2), Color.BLACK);
             startGroup.getChildren().add(rect);
             vbox.toFront();
         }
@@ -286,24 +236,24 @@ public class SettingView {
         helpInitControlls(new Label(buttonLeft), controllBox, controlLeft);
         helpInitControlls(new Label(buttonRight), controllBox, controlRight);
         helpInitControlls(new Label(buttonRestart), controllBox, controlRestart);
-        generatePicker(controllBox, wormholeColor, titleWormhole);
+        generatePicker(controllBox, settings.getWormholeColor(), titleWormhole);
         helpInitControlls(new Label(buttonRandom), controllBox, infoWormholeRandom);
         helpInitControlls(new Label(buttonInterval), controllBox, infoWormholeInterval);
         helpInitControlls(new Label(buttonFixed), controllBox, infoWormholeFixed);
         helpInitControlls(new Label(buttonLifespan), controllBox, infoWormholeLifespan);
         helpInitControlls(new Label(buttonLimit), controllBox, infoWormholeLimit);
-        generatePicker(controllBox, appleColor, titleApple);
-        generatePicker(controllBox, gameColor, titleScreen);
+        generatePicker(controllBox, settings.getAppleColor(), titleApple);
+        generatePicker(controllBox, settings.getGameColor(), titleScreen);
         helpInitControlls(new Label(buttonGameWidth), controllBox, infoGameWidth);
         helpInitControlls(new Label(buttonGameHeight), controllBox, infoGameHeight);
         helpInitControlls(new Label(buttonScreenWidth), controllBox, infoScreenWidth);
         helpInitControlls(new Label(buttonScreenHeight), controllBox, infoScreenHeight);
-        generatePicker(controllBox, snakeColor, titleSnake);
+        generatePicker(controllBox, settings.getSnakeColor(), titleSnake);
         helpInitControlls(new Label(buttonSnakeSize), controllBox, infoSnakesize);
     }
 
     private void generatePicker(VBox controllBox, Color color, String id) {
-        Rectangle rect = new Rectangle(GAME_INFO_HEIGHT * 0.4, GAME_INFO_HEIGHT * 0.4, color);
+        Rectangle rect = new Rectangle(Settings.GAME_INFO_HEIGHT * 0.4, Settings.GAME_INFO_HEIGHT * 0.4, color);
         rect.setId(id);
         ColorPicker picker = new ColorPicker();
         picker.setVisible(false);
@@ -334,7 +284,7 @@ public class SettingView {
             controllBox.getChildren().add(rect);
         } else if (node instanceof HBox) {
             HBox rect = (HBox) node;
-            rect.setOnMouseClicked(new SettingView.SettingInteraction());
+            rect.setOnMouseClicked(new SettingInteraction());
             controllBox.getChildren().add(rect);
         }
         node.setId(id);
@@ -387,6 +337,14 @@ public class SettingView {
             if (!input.equals("")) {
                 label.setText(input);
             }
+        }
+    }
+    
+    private class ChangeKeyInteraction implements EventHandler<KeyEvent> {
+        
+        @Override
+        public void handle(KeyEvent event) {
+            controller.changeKey(event);
         }
     }
 

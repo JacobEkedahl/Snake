@@ -5,8 +5,8 @@
  */
 package View;
 
+import Model.Settings;
 import Model.Wormhole;
-import static View.BoardView.GAME_INFO_HEIGHT;
 import java.util.ArrayList;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -41,9 +41,9 @@ public class BoardInfo {
 
     private HBox gameInfoBox;
 
-    public BoardInfo() {
+    public BoardInfo(Color wormholeColor) {
         initGameInfoBox();
-        setWormholeColor(Color.BLUE);
+        setWormholeColor(wormholeColor);
     }
 
     public HBox getGameInfoBox() {
@@ -127,7 +127,7 @@ public class BoardInfo {
         gameInfoBox = new HBox();
         gameInfoBox.setSpacing(10);
         gameInfoBox.setStyle("-fx-background-color: #e4fbfd;");
-        gameInfoBox.setPrefHeight(GAME_INFO_HEIGHT);
+        gameInfoBox.setPrefHeight(Settings.GAME_INFO_HEIGHT);
         Region leftInfo = new Region();
         HBox.setHgrow(leftInfo, Priority.ALWAYS);
         initWormholeInfo();
@@ -169,7 +169,7 @@ public class BoardInfo {
     public void addWormholeInfo() {
         TilePane wormholePane = new TilePane(Orientation.VERTICAL);
         wormholePane.setPrefRows(2);
-        Rectangle rect = new Rectangle(BoardView.GAME_INFO_HEIGHT * 0.3, BoardView.GAME_INFO_HEIGHT * 0.3, wormholeColor);
+        Rectangle rect = new Rectangle(Settings.GAME_INFO_HEIGHT * 0.3, Settings.GAME_INFO_HEIGHT * 0.3, wormholeColor);
         Label wormhole_lbl = new Label("10");
         wormholePane.getChildren().addAll(rect, wormhole_lbl);
         Group wormhole = new Group(wormholePane);

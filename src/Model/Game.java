@@ -19,13 +19,13 @@ public class Game {
 
     private static final boolean START = true;
     private static final boolean DONT_START = false;
-    private static final int repeatTime = 10;
+    private static final int REPEAT_TIME = 1;
     public static int RESET_TIME = -1;
     private static final int START_LEVEL = 1;
-    private static final int MAX_LEVEL = 5;
+    private static final int MAX_LEVEL = 20;
 
     private boolean randomWormhole;
-    private int intervalWormhole;
+    private int timeToLiveWormhole;
     private double percentageIncrease;
     private Snake snake;
     private int time;
@@ -46,22 +46,21 @@ public class Game {
     private int maxWormholes;
 
     private int level;
-    private int timeToNext = repeatTime;
+    private int timeToNext = REPEAT_TIME;
 
-    public Game(int snakeSize, int width, int height, int speed, double percentageIncrease,
-            int intervalWormhole, int wormholeInterval, boolean randomWormhole, int maxWormholes, BoardView view) {
-        this.maxWormholes = maxWormholes;
-        this.wormholeInterval = wormholeInterval;
-        this.randomWormhole = randomWormhole;
-        this.intervalWormhole = intervalWormhole;
-        this.percentageIncrease = percentageIncrease;
-        this.originalSpeed = speed;
-        this.snakeSize = snakeSize;
-        this.width = width;
-        this.height = height;
+    public Game(Settings settings, BoardView view) {
+        this.maxWormholes = settings.getMaxwormholes();
+        this.wormholeInterval = settings.getInterval();
+        this.randomWormhole = settings.isRandomWormholes();
+        this.timeToLiveWormhole = settings.getTimetolive();
+        this.percentageIncrease = settings.getPercentageIncrease();
+        this.originalSpeed = settings.getSpeed();
+        this.snakeSize = settings.getSizeSnake();
+        this.width = settings.getWidth();
+        this.height = settings.getHeight();
         this.view = view;
         this.level = START_LEVEL;
-        this.timeToNext = repeatTime;
+        this.timeToNext = REPEAT_TIME;
     }
 
     /**
@@ -77,7 +76,7 @@ public class Game {
         wormholes = new ArrayList<>();
         initBoard(width, height);
         this.level = START_LEVEL;
-        this.timeToNext = repeatTime;
+        this.timeToNext = REPEAT_TIME;
         view.updateScore();
     }
 
@@ -87,17 +86,16 @@ public class Game {
         resetTimerGame(START);
     }
 
-    public void updateSettings(int snakeSize, int width, int height, int speed, double percentageIncrease,
-            int intervalWormhole, int wormholeInterval, boolean randomWormhole, int maxWormholes) {
-        this.maxWormholes = maxWormholes;
-        this.wormholeInterval = wormholeInterval;
-        this.randomWormhole = randomWormhole;
-        this.intervalWormhole = intervalWormhole;
-        this.percentageIncrease = percentageIncrease;
-        this.originalSpeed = speed;
-        this.snakeSize = snakeSize;
-        this.width = width;
-        this.height = height;
+    public void updateSettings(Settings settings) {
+        this.maxWormholes = settings.getMaxwormholes();
+        this.wormholeInterval = settings.getInterval();
+        this.randomWormhole = settings.isRandomWormholes();
+        this.timeToLiveWormhole = settings.getTimetolive();
+        this.percentageIncrease = settings.getPercentageIncrease();
+        this.originalSpeed = settings.getSpeed();
+        this.snakeSize = settings.getSizeSnake();
+        this.width = settings.getWidth();
+        this.height = settings.getHeight();
         this.view = view;
     }
 
@@ -139,7 +137,7 @@ public class Game {
                 tmpEntry = clickedPos;
             } else {
                 tmpEntry2 = clickedPos;
-                wormholes.add(new Wormhole(tmpEntry, tmpEntry2, intervalWormhole));
+                wormholes.add(new Wormhole(tmpEntry, tmpEntry2, timeToLiveWormhole));
                 tmpEntry = null;
             }
         }
@@ -149,7 +147,7 @@ public class Game {
         if (wormholes.size() < maxWormholes) {
             Position entry = getSingleFreePos(null);
             Position entry2 = getSingleFreePos(entry);
-            Wormhole newWormhole = new Wormhole(entry, entry2, intervalWormhole);
+            Wormhole newWormhole = new Wormhole(entry, entry2, timeToLiveWormhole);
             wormholes.add(newWormhole);
         }
     }
@@ -345,7 +343,7 @@ public class Game {
                         increaseSpeed(percentageIncrease);
                         increaseLevel();
                     } else if (timeToNext == RESET_TIME) {
-                        timeToNext = repeatTime;
+                        timeToNext = REPEAT_TIME;
                     } else {
                         timeToNext--;
                     }

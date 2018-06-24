@@ -11,7 +11,6 @@ import Model.Position;
 import View.BoardInfo;
 import View.BoardView;
 import View.SettingView;
-import static View.BoardView.GAME_INFO_HEIGHT;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Node;
@@ -31,11 +30,18 @@ public class Controller {
     private BoardView boardView;
     private SettingView settingView;
     private BoardInfo boardInfo;
+
     private Converter converter;
 
-    Controller(Game sharedGame, Converter converter) {
+    public Controller(Game sharedGame, Converter converter) {
         game = sharedGame;
         this.converter = converter;
+    }
+
+    public void addViews(BoardInfo boardInfo, SettingView settingView, BoardView boardView) {
+        this.boardInfo = boardInfo;
+        this.settingView = settingView;
+        this.boardView = boardView;
     }
 
     public void saveChanges(MouseEvent event) {
@@ -50,7 +56,7 @@ public class Controller {
     }
 
     public void settingEvent(MouseEvent event) {
-        settingView.chosedNode((Node)event.getSource());
+        settingView.chosedNode((Node) event.getSource());
     }
 
     public void clickedEvent(MouseEvent event) {
@@ -67,12 +73,15 @@ public class Controller {
     }
 
     public void userInteraction(KeyEvent event) {
-        if (event.getCode() == KeyCode.valueOf(settingView.getLeftKey())) {
+        if (settingView.isLabelSelected()) {
+            String keySelected = event.getCode().getName().toUpperCase();
+            settingView.setLabel(keySelected);
+        } else if (event.getCode() == KeyCode.valueOf(boardView.getLeftKey())) {
             System.out.println(KeyCode.S);
             game.goLeft();
-        } else if (event.getCode() == KeyCode.valueOf(settingView.getRightKey())) {
+        } else if (event.getCode() == KeyCode.valueOf(boardView.getRightKey())) {
             game.goRight();
-        } else if (event.getCode() == KeyCode.valueOf(settingView.getRestartKey())) {
+        } else if (event.getCode() == KeyCode.valueOf(boardView.getRestartKey())) {
             boardView.changeSizeToBoard();
             game.init();
             boardInfo.clearWormholeInfo();
