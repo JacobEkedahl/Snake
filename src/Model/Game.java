@@ -7,11 +7,8 @@ package Model;
 
 import View.BoardView;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Timer;
 import java.util.TimerTask;
-import javafx.concurrent.Task;
 
 //TODO reset increasespeed timer when user eats an apple
 /**
@@ -20,10 +17,12 @@ import javafx.concurrent.Task;
  */
 public class Game {
 
-    private static boolean START = true;
-    private static boolean DONT_START = false;
-    private static int repeatTime = 10;
-    public static int RESET_TIME = -10;
+    private static final boolean START = true;
+    private static final boolean DONT_START = false;
+    private static final int repeatTime = 10;
+    public static int RESET_TIME = -1;
+    private static final int START_LEVEL = 1;
+    private static final int MAX_LEVEL = 5;
 
     private boolean randomWormhole;
     private int intervalWormhole;
@@ -45,7 +44,7 @@ public class Game {
     private int snakeSize, width, height;
     private int wormholeInterval;
     private int maxWormholes;
-    
+
     private int level;
     private int timeToNext = repeatTime;
 
@@ -61,7 +60,7 @@ public class Game {
         this.width = width;
         this.height = height;
         this.view = view;
-        this.level = 1;
+        this.level = START_LEVEL;
         this.timeToNext = repeatTime;
     }
 
@@ -77,7 +76,7 @@ public class Game {
         apples = new ArrayList<>();
         wormholes = new ArrayList<>();
         initBoard(width, height);
-        this.level = 1;
+        this.level = START_LEVEL;
         this.timeToNext = repeatTime;
         view.updateScore();
     }
@@ -87,10 +86,10 @@ public class Game {
         generateRandomApple();
         resetTimerGame(START);
     }
-    
+
     public void updateSettings(int snakeSize, int width, int height, int speed, double percentageIncrease,
             int intervalWormhole, int wormholeInterval, boolean randomWormhole, int maxWormholes) {
-                this.maxWormholes = maxWormholes;
+        this.maxWormholes = maxWormholes;
         this.wormholeInterval = wormholeInterval;
         this.randomWormhole = randomWormhole;
         this.intervalWormhole = intervalWormhole;
@@ -323,31 +322,33 @@ public class Game {
         resetTimerTime();
         view.showGameOver();
     }
-    
+
     public int getTimeToNext() {
         return timeToNext;
     }
-    
+
     private void increaseLevel() {
         level++;
     }
-    
+
     public int getLevel() {
         return level;
     }
-    
+
     private void setupTimeTask() {
         timeTask = new TimerTask() {
             @Override
             public void run() {
-                if (timeToNext == 0) {
-                    timeToNext = RESET_TIME;
-                    increaseSpeed(percentageIncrease);
-                    increaseLevel();
-                } else if (timeToNext == RESET_TIME) {
-                    timeToNext = repeatTime;
-                } else  {
-                    timeToNext--;
+                if (level < MAX_LEVEL) {
+                    if (timeToNext == 0) {
+                        timeToNext = RESET_TIME;
+                        increaseSpeed(percentageIncrease);
+                        increaseLevel();
+                    } else if (timeToNext == RESET_TIME) {
+                        timeToNext = repeatTime;
+                    } else {
+                        timeToNext--;
+                    }
                 }
 
                 if (randomWormhole) {
@@ -365,7 +366,7 @@ public class Game {
                         }
                     }
                 }
-                
+
                 view.updateResult();
                 time += 1;
             }

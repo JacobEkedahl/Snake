@@ -5,17 +5,10 @@
  */
 package View;
 
-import java.applet.Applet;
-
 /**
  *
  * @author Jacob
  */
-public class BoardViewApplet extends Applet {
-    
-    @Override
-    public void init() {
-        
-    }
+public class MainView {
     
 }

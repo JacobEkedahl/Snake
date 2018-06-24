@@ -68,7 +68,7 @@ public class BoardView extends Application {
     private static int HEIGHT = 40;
     private static int SCREEN_WIDTH = 600;
     private static int SCREEN_HEIGHT = 800;
-    private static int GAME_INFO_HEIGHT = 50;
+    public static int GAME_INFO_HEIGHT = 50;
     private static double INCREASE_SPEED = 0.95;
     private static int BORDERSIZE = 3;
     private static int WORMHOLE_TIMETOLIVE = 30;
@@ -137,15 +137,6 @@ public class BoardView extends Application {
     private HashMap<String, Rectangle> rectMap = new HashMap<>();
     private ArrayList<Position> snakePos;
     private ArrayList<Position> wormholes = new ArrayList<>();
-    private ArrayList<Group> wormholes_info = new ArrayList<>();
-    private ArrayList<Label> wormholes_lbl = new ArrayList<>();
-    private HBox wormholes_box;
-
-    private HBox timeAndSpeed_info;
-    private Label timefornextspeed_lbl;
-    private Label currentscore_lbl;
-    private Label currentspeed_lbl;
-    private int currentspeed;
 
     private Converter converter;
 
@@ -158,6 +149,8 @@ public class BoardView extends Application {
     private double percentageIncrease;
     private boolean randomWormholes, fixedWormholes;
     private Color wormholeColor, appleColor, gameColor, snakeColor;
+    
+    private BoardInfo boardInfo;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -199,6 +192,7 @@ public class BoardView extends Application {
         restartKey = getStringFromMap(controlRestart);
 
         wormholeColor = getColorFromMap(titleWormhole);
+        boardInfo.setWormholeColor(wormholeColor);
         appleColor = getColorFromMap(titleApple);
         gameColor = getColorFromMap(titleScreen);
         snakeColor = getColorFromMap(titleSnake);
@@ -304,55 +298,16 @@ public class BoardView extends Application {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                System.out.println("wormholes: size: " + wormholes_info.size());
-                try {
-                    Group tmpGroup = wormholes_info.get(index);
-                    wormholes_box.getChildren().remove(tmpGroup);
-                    wormholes_info.remove(index);
-                    wormholes_lbl.remove(index);
-                    currentSizeWormholes--;
-                } catch (IndexOutOfBoundsException ex) {
-                    //continue
-                    System.out.println("Tried to remove, but no");
-                }
+                boardInfo.removeWormhole(index);
             }
         });
     }
-
-    private int currentSizeWormholes = 0;
 
     private void showInfoWormholes(ArrayList<Wormhole> tmpWormholes) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                int size = tmpWormholes.size();
-                if (currentSizeWormholes < size) {
-                    int moreToAdd = size - currentSizeWormholes;
-                    for (int i = 0; i < moreToAdd; i++) {
-                        addWormholeInfo();
-                        System.out.println("Wormhole size: " + wormholes_info.size());
-                    }
-                    currentSizeWormholes = size;
-
-                }
-
-                for (int i = 0; i < tmpWormholes.size(); i++) {
-                    showWormholeInfo(i, tmpWormholes.get(i).getTimeToLive());
-                }
-            }
-        });
-    }
-
-    private void showWormholeInfo(int index, int timeToLive) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    wormholes_lbl.get(index).setText("" + timeToLive);
-                } catch (Exception ex) {
-                    System.out.println("index: " + index + " size: " + wormholes_info.size());
-                    System.out.println("Could not show more info");
-                }
+                boardInfo.showInfoWormholes(tmpWormholes);
             }
         });
     }
@@ -371,13 +326,6 @@ public class BoardView extends Application {
             Rectangle rect = rectMap.get(p.getId());
             rect.setFill(gameColor);
         }
-    }
-
-    private void clearWormholeInfo() {
-        wormholes_box.getChildren().clear();
-        currentSizeWormholes = 0;
-        wormholes_info.clear();
-        wormholes_lbl.clear();
     }
 
     private void initStart() {
@@ -501,33 +449,14 @@ public class BoardView extends Application {
         controllNodes.put(id, node);
     }
 
-    private void initHBox() {
-        gameInfoBox = new HBox();
-        gameInfoBox.setSpacing(10);
-        gameInfoBox.setStyle("-fx-background-color: #e4fbfd;");
-        gameInfoBox.setPrefHeight(GAME_INFO_HEIGHT);
-        leftInfo = new Region();
-        HBox.setHgrow(leftInfo, Priority.ALWAYS);
-        initWormholeInfo();
-        initGameInfo();
-        gameInfoBox.getChildren().addAll(wormholes_box, leftInfo, timeAndSpeed_info);
-        gameInfoBox.getStylesheets().add("bottomview.css");
-    }
-
     public void updateResult() {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 int next = game.getTimeToNext();
                 int level = game.getLevel();
-                String nextInfo = "";
-                if (next == game.RESET_TIME) {
-                    nextInfo = "!";
-                } else {
-                    nextInfo = "" + next;
-                }
-                timefornextspeed_lbl.setText(nextInfo);
-                currentspeed_lbl.setText(String.valueOf(level));
+                boardInfo.updateNext(next);
+                boardInfo.updateLevel(level);
             }
         });
     }
@@ -537,51 +466,9 @@ public class BoardView extends Application {
             @Override
             public void run() {
                 int score = game.getResult().getSizeSnake();
-                currentscore_lbl.setText(String.valueOf(score));
+                boardInfo.updateScore(score);
             }
         });
-    }
-
-    private void initGameInfo() {
-        timeAndSpeed_info = new HBox();
-        timeAndSpeed_info.setPadding(new Insets(15, 12, 15, 12));
-        timeAndSpeed_info.setSpacing(10);
-        timeAndSpeed_info.setStyle("-fx-background-color: #e4fbfd;");
-
-        Label nextLbl = new Label("NEXT LEVEL: ");
-        timefornextspeed_lbl = new Label("");
-        timefornextspeed_lbl.setId("info_lbl");
-        HBox nextBox = new HBox(nextLbl, timefornextspeed_lbl);
-
-        Label scoreLbl = new Label("SCORE: ");
-        currentscore_lbl = new Label("");
-        currentscore_lbl.setId("info_lbl");
-        HBox scoreBox = new HBox(scoreLbl, currentscore_lbl);
-
-        Label speedLbl = new Label("LEVEL: ");
-        currentspeed_lbl = new Label("");
-        currentspeed_lbl.setId("info_lbl");
-        HBox speedBox = new HBox(speedLbl, currentspeed_lbl);
-        timeAndSpeed_info.getChildren().addAll(nextBox, scoreBox, speedBox);
-    }
-
-    private void initWormholeInfo() {
-        wormholes_box = new HBox();
-        wormholes_box.setPadding(new Insets(0, 12, 0, 12));
-        wormholes_box.setSpacing(10);
-        wormholes_box.setStyle("-fx-background-color: #e4fbfd;");
-    }
-
-    private void addWormholeInfo() {
-        TilePane wormholePane = new TilePane(Orientation.VERTICAL);
-        wormholePane.setPrefRows(2);
-        Rectangle rect = new Rectangle(GAME_INFO_HEIGHT * 0.3, GAME_INFO_HEIGHT * 0.3, wormholeColor);
-        Label wormhole_lbl = new Label("10");
-        wormholePane.getChildren().addAll(rect, wormhole_lbl);
-        Group wormhole = new Group(wormholePane);
-        wormholes_info.add(wormhole);
-        wormholes_lbl.add(wormhole_lbl);
-        wormholes_box.getChildren().add(wormhole);
     }
 
     private void initResult() {
@@ -626,7 +513,7 @@ public class BoardView extends Application {
 
     public void showBoard() {
         mainPane.setCenter(boardGroup);
-        mainPane.setBottom(gameInfoBox);
+        mainPane.setBottom(boardInfo.getGameInfoBox());
     }
 
     private void updateBoardSize() {
@@ -650,7 +537,7 @@ public class BoardView extends Application {
         initResult();
         initBoard();
         initStart();
-        initHBox();
+        boardInfo = new BoardInfo();
         updateScreenSize(SCREEN_WIDTH_SETTINGS, SCREEN_HEIGHT_SETTINGS, 0);
         mainPane.setCenter(startGroup);
         primaryStage.show();
@@ -815,7 +702,7 @@ public class BoardView extends Application {
             } else if (event.getCode() == KeyCode.valueOf(restartKey)) {
                 updateScreenSize(screenWidth, screenHeight, GAME_INFO_HEIGHT);
                 game.init();
-                clearWormholeInfo();
+                boardInfo.clearWormholeInfo();
                 initBoard();
                 showBoard();
                 game.start();
