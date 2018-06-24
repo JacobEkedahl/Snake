@@ -31,6 +31,18 @@ public class Converter {
         }
         return false;
     }
+    
+    public static String boolToString(boolean bool) {
+        if (bool) {
+            return "YES";
+        } else {
+            return "NO";
+        }
+    }
+    
+    public static String intToStr(int integer) {
+        return String.valueOf(integer);
+    }
 
     public boolean isInteger(String s, int radix) {
         if (s.isEmpty()) {

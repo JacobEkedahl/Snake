@@ -28,6 +28,8 @@ public class Settings {
     private final static int MAX_WORMHOLES = 5;
     private final static boolean RANDOM_WORMHOLES = true;
     private final static boolean FIXED_WORMHOLES = false;
+    
+    //colors of elements in game
     private final static Color WORMHOLE_COLOR = Color.BLUEVIOLET;
     private final static Color APPLE_COLOR = Color.GREEN;
     private final static Color GAME_COLOR = Color.BLACK;

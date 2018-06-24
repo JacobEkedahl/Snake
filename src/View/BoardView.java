@@ -82,12 +82,13 @@ public class BoardView extends Application {
     private Game game;
     private ArrayList<ImageView> board;
     private HashMap<String, Rectangle> rectMap = new HashMap<>();
+    
+    //variables retrieved from the game object and displayed on this view
     private ArrayList<Position> snakePos;
     private ArrayList<Position> wormholes = new ArrayList<>();
 
     private Converter converter;
-
-    Controller controller;
+    private Controller controller;
     Stage primaryStage;
 
     private BoardInfo boardInfo;
@@ -106,7 +107,6 @@ public class BoardView extends Application {
     }
 
     private boolean first = true;
-
     public void setupGame() throws Exception {
         converter = new Converter(settings.getScreenWidth(), settings.getScreenHeight(),
                                 settings.getWidth(), settings.getHeight(), 50);
@@ -126,20 +126,6 @@ public class BoardView extends Application {
         }
         game.init();
         snakePos = game.getSnakePosition();
-    }
-
-    public void showGameOver() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                //show text game over, time, and size of snake
-                Result res = game.getResult();
-                timeLbl.setText("Time: " + res.getTime() + " seconds");
-                scoreLbl.setText("Score: " + res.getSizeSnake());
-                mainPane.setCenter(resultGroup);
-                mainPane.setBottom(null);
-            }
-        });
     }
 
     public void updateUI() {
@@ -211,6 +197,20 @@ public class BoardView extends Application {
             rect.setFill(settings.getGameColor());
         }
     }
+    
+    public void showGameOver() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                //show text game over, time, and size of snake
+                Result res = game.getResult();
+                timeLbl.setText("Time: " + res.getTime() + " seconds");
+                scoreLbl.setText("Score: " + res.getSizeSnake());
+                mainPane.setCenter(resultGroup);
+                mainPane.setBottom(null);
+            }
+        });
+    }
 
     public void updateResult() {
         Platform.runLater(new Runnable() {
@@ -234,6 +234,7 @@ public class BoardView extends Application {
         });
     }
     
+    //called by the controller so it listens to the keys in the settings
     public String getLeftKey() {
         return settings.getLeftKey();
     }

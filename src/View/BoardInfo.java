@@ -34,7 +34,6 @@ public class BoardInfo {
     private Label timefornextspeed_lbl;
     private Label currentscore_lbl;
     private Label currentspeed_lbl;
-    private int currentspeed;
     private int currentSizeWormholes = 0;
 
     private Color wormholeColor;

@@ -60,22 +60,7 @@ public class SettingView {
     private static final String titleSnake = "Snake";
     private static final String infoSnakesize = "Snake size (Integer)";
 
-    //the nodes actnig as button to change the settings
-    private static final String buttonLeft = "S";
-    private static final String buttonRight = "D";
-    private static final String buttonRestart = "SPACE";
-    private static final String buttonRandom = "YES";
-    private static final String buttonInterval = "1";
-    private static final String buttonFixed = "YES";
-    private static final String buttonLifespan = "10";
-    private static final String buttonLimit = "5";
-    private static final String buttonGameWidth = "40";
-    private static final String buttonGameHeight = "40";
-    private static final String buttonScreenWidth = "600";
-    private static final String buttonScreenHeight = "800";
-    private static final String buttonSnakeSize = "10";
     private static final String buttonApply = "APPLY";
-
     private Group startGroup;
     private GridPane startPane;
 
@@ -232,23 +217,28 @@ public class SettingView {
     }
 
     private void initControllLabels(VBox controllBox) {
-        helpInitControlls(new Label(buttonLeft), controllBox, controlLeft);
-        helpInitControlls(new Label(buttonRight), controllBox, controlRight);
-        helpInitControlls(new Label(buttonRestart), controllBox, controlRestart);
+        helpInitControlls(new Label(settings.getLeftKey()), controllBox, controlLeft);
+        helpInitControlls(new Label(settings.getRightKey()), controllBox, controlRight);
+        helpInitControlls(new Label(settings.getRestartKey()), controllBox, controlRestart);
         generatePicker(controllBox, settings.getWormholeColor(), titleWormhole);
-        helpInitControlls(new Label(buttonRandom), controllBox, infoWormholeRandom);
-        helpInitControlls(new Label(buttonInterval), controllBox, infoWormholeInterval);
-        helpInitControlls(new Label(buttonFixed), controllBox, infoWormholeFixed);
-        helpInitControlls(new Label(buttonLifespan), controllBox, infoWormholeLifespan);
-        helpInitControlls(new Label(buttonLimit), controllBox, infoWormholeLimit);
+        helpInitControlls(new Label(Converter.boolToString(settings.isRandomWormholes())),
+                controllBox, infoWormholeRandom);
+        helpInitControlls(new Label(String.valueOf(settings.getInterval())),
+                controllBox, infoWormholeInterval);
+        helpInitControlls(new Label(Converter.boolToString(settings.isFixedWormholes())),
+                controllBox, infoWormholeFixed);
+        helpInitControlls(new Label(String.valueOf(settings.getTimetolive())),
+                controllBox, infoWormholeLifespan);
+        helpInitControlls(new Label(String.valueOf(settings.getMaxwormholes())), controllBox, infoWormholeLimit);
         generatePicker(controllBox, settings.getAppleColor(), titleApple);
         generatePicker(controllBox, settings.getGameColor(), titleScreen);
-        helpInitControlls(new Label(buttonGameWidth), controllBox, infoGameWidth);
-        helpInitControlls(new Label(buttonGameHeight), controllBox, infoGameHeight);
-        helpInitControlls(new Label(buttonScreenWidth), controllBox, infoScreenWidth);
-        helpInitControlls(new Label(buttonScreenHeight), controllBox, infoScreenHeight);
+        helpInitControlls(new Label(String.valueOf(settings.getWidth())),
+                controllBox, infoGameWidth);
+        helpInitControlls(new Label(String.valueOf(settings.getHeight())), controllBox, infoGameHeight);
+        helpInitControlls(new Label(String.valueOf(settings.getScreenWidth())), controllBox, infoScreenWidth);
+        helpInitControlls(new Label(String.valueOf(settings.getScreenHeight())), controllBox, infoScreenHeight);
         generatePicker(controllBox, settings.getSnakeColor(), titleSnake);
-        helpInitControlls(new Label(buttonSnakeSize), controllBox, infoSnakesize);
+        helpInitControlls(new Label(String.valueOf(settings.getSizeSnake())), controllBox, infoSnakesize);
     }
 
     private void generatePicker(VBox controllBox, Color color, String id) {

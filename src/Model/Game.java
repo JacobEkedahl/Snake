@@ -19,7 +19,7 @@ public class Game {
 
     private static final boolean START = true;
     private static final boolean DONT_START = false;
-    private static final int REPEAT_TIME = 1;
+    private static final int REPEAT_TIME = 5;
     public static int RESET_TIME = -1;
     private static final int START_LEVEL = 1;
     private static final int MAX_LEVEL = 20;
