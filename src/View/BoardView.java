@@ -149,7 +149,7 @@ public class BoardView extends Application {
     private double percentageIncrease;
     private boolean randomWormholes, fixedWormholes;
     private Color wormholeColor, appleColor, gameColor, snakeColor;
-    
+
     private BoardInfo boardInfo;
 
     @Override
@@ -489,7 +489,7 @@ public class BoardView extends Application {
         resultGroup.setBorder(border);
     }
 
-    private void initBoard() {
+    public void initBoard() {
         boardGroup = new Group();
         boardPane = new GridPane();
         ArrayList<Position> boardPosition = game.getBoard();
@@ -516,7 +516,7 @@ public class BoardView extends Application {
         mainPane.setBottom(boardInfo.getGameInfoBox());
     }
 
-    private void updateBoardSize() {
+    public void updateBoardSize() {
         heightBox = converter.getHeightBox();
         widthBox = converter.getWidthBox();
 
@@ -538,13 +538,21 @@ public class BoardView extends Application {
         initBoard();
         initStart();
         boardInfo = new BoardInfo();
-        updateScreenSize(SCREEN_WIDTH_SETTINGS, SCREEN_HEIGHT_SETTINGS, 0);
+        changeSizeToSettings();
         mainPane.setCenter(startGroup);
         primaryStage.show();
         addRectSettings();
     }
 
-    public void updateScreenSize(int width, int height, int bottomMenuHeight) {
+    public void changeSizeToSettings() {
+        updateScreenSize(SCREEN_WIDTH_SETTINGS, SCREEN_HEIGHT_SETTINGS, 0);
+    }
+
+    public void changeSizeToBoard() {
+        updateScreenSize(screenWidth, screenHeight, GAME_INFO_HEIGHT);
+    }
+
+    private void updateScreenSize(int width, int height, int bottomMenuHeight) {
         mainPane = new BorderPane();
         mainPane.setCenter(null); //startGroup
         Scene scene = new Scene(mainPane, width + (BORDERSIZE * 2), height + (BORDERSIZE * 2) + bottomMenuHeight);
@@ -700,7 +708,7 @@ public class BoardView extends Application {
             } else if (event.getCode() == KeyCode.DOWN) {
                 game.decreaseSpeed(INCREASE_SPEED);
             } else if (event.getCode() == KeyCode.valueOf(restartKey)) {
-                updateScreenSize(screenWidth, screenHeight, GAME_INFO_HEIGHT);
+                changeSizeToBoard();
                 game.init();
                 boardInfo.clearWormholeInfo();
                 initBoard();

@@ -23,7 +23,7 @@ public class Converter {
         this.gameInfoHeight = gameInfoHeight;
     }
     
-    public boolean strToBool(String text) {
+    public static boolean strToBool(String text) {
         if (text.equals("YES")) {
             return true;
         } else if (text.equals("NO")) {
