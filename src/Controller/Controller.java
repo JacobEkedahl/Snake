@@ -40,7 +40,6 @@ public class Controller {
     
     public void goToSettings() {
         boardView.goToSettings();
-        System.out.println("SEttings!");
     }
 
     public void addViews(BoardInfo boardInfo, SettingsView settingView, BoardView boardView) {
@@ -52,7 +51,6 @@ public class Controller {
     public void saveChanges(MouseEvent event) {
         settingView.setNewSettings();
         try {
-            boardInfo.setWormholeColor(settingView.getWormholeColor());
             boardView.setupGame();
             boardView.updateBoardSize();
         } catch (Exception ex) {

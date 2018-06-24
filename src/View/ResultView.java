@@ -77,6 +77,7 @@ public class ResultView {
         scoreLbl.setTextFill(settings.getSnakeColor());
         timeLbl.setTextFill(settings.getSnakeColor());
 
+        //background
         BackgroundFill fill = new BackgroundFill(settings.getGameColor(), null, null);
         Background background = new Background(fill);
         resultGroup.setBackground(background);

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class Converter {
 
     private static int widthScreen, heightScreen, width, height, gameInfoHeight;
+    private final static int normalWidth = 600;
 
     public Converter(int widthScreen, int heightScreen, int width, int height, int gameInfoHeight) {
         this.widthScreen = widthScreen;

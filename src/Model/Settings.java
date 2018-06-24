@@ -12,14 +12,19 @@ import javafx.scene.paint.Color;
  * @author Jacob
  */
 public class Settings {
-
+    
+    public static final int REPEAT_TIME = 5;
+    public static int RESET_VALUE = -1;
+    public static final int START_LEVEL = 1;
+    public static final int MAX_LEVEL = 20;
+    
     //standard settings for the game
     private final static int SIZE_SNAKE = 10;
     public final static int SPEED = 150;
-    private final static int WIDTH = 40;
-    private final static int HEIGHT = 40;
-    private final static int SCREEN_WIDTH = 600;
-    private final static int SCREEN_HEIGHT = 800;
+    private final static int WIDTH = 30;
+    private final static int HEIGHT = 30;
+    private final static int SCREEN_WIDTH = 500;
+    private final static int SCREEN_HEIGHT = 500;
     public final static int GAME_INFO_HEIGHT = 50;
     public final static double INCREASE_SPEED = 0.95;
     public final static int BORDERSIZE = 3;

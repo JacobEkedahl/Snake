@@ -292,7 +292,7 @@ public class BoardView extends Application {
 
     private void initView(Stage primaryStage) {
         settingView = new SettingsView(controller);
-        boardInfo = new BoardInfo(controller, settings.getWormholeColor());
+        boardInfo = new BoardInfo(controller);
         resultView = new ResultView();
         mainPane = new BorderPane();
         initBoard();

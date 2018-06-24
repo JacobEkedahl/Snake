@@ -19,10 +19,6 @@ public class Game {
 
     private static final boolean START = true;
     private static final boolean DONT_START = false;
-    private static final int REPEAT_TIME = 5;
-    public static int RESET_TIME = -1;
-    private static final int START_LEVEL = 1;
-    private static final int MAX_LEVEL = 20;
 
     private boolean randomWormhole;
     private int timeToLiveWormhole;
@@ -46,7 +42,7 @@ public class Game {
     private int maxWormholes;
 
     private int level;
-    private int timeToNext = REPEAT_TIME;
+    private int timeToNext = Settings.REPEAT_TIME;
 
     public Game(Settings settings, BoardView view) {
         this.maxWormholes = settings.getMaxwormholes();
@@ -59,8 +55,8 @@ public class Game {
         this.width = settings.getWidth();
         this.height = settings.getHeight();
         this.view = view;
-        this.level = START_LEVEL;
-        this.timeToNext = REPEAT_TIME;
+        this.level = Settings.START_LEVEL;
+        this.timeToNext = Settings.REPEAT_TIME;
     }
 
     /**
@@ -75,8 +71,8 @@ public class Game {
         apples = new ArrayList<>();
         wormholes = new ArrayList<>();
         initBoard(width, height);
-        this.level = START_LEVEL;
-        this.timeToNext = REPEAT_TIME;
+        this.level = Settings.START_LEVEL;
+        this.timeToNext = Settings.REPEAT_TIME;
         view.updateScore();
     }
 
@@ -341,13 +337,13 @@ public class Game {
         timeTask = new TimerTask() {
             @Override
             public void run() {
-                if (level < MAX_LEVEL) {
+                if (level < Settings.MAX_LEVEL) {
                     if (timeToNext == 0) {
-                        timeToNext = RESET_TIME;
+                        timeToNext = Settings.RESET_VALUE;
                         increaseSpeed(percentageIncrease);
                         increaseLevel();
-                    } else if (timeToNext == RESET_TIME) {
-                        timeToNext = REPEAT_TIME;
+                    } else if (timeToNext == Settings.RESET_VALUE) {
+                        timeToNext = Settings.REPEAT_TIME;
                     } else {
                         timeToNext--;
                     }

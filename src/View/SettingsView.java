@@ -61,8 +61,8 @@ public class SettingsView {
     private static final String infoSnakesize = "Snake size (Integer)";
 
     private static final String buttonApply = "APPLY";
-    private Group startGroup;
-    private GridPane startPane;
+    private Group settingGroup;
+    private GridPane settingPane;
 
     //hashmap of references to the controlls in the settingsmenu (id is used to find the node)
     private HashMap<String, Node> controllNodes = new HashMap<>();
@@ -74,11 +74,11 @@ public class SettingsView {
     public SettingsView(Controller controller) {
         this.controller = controller;
         this.settings = Settings.getInstance();
-        initStart();
+        initSettings();
     }
     
     public Group getGroup() {
-        return startGroup;
+        return settingGroup;
     }
     
     public boolean isLabelSelected() {
@@ -121,8 +121,8 @@ public class SettingsView {
         }
     }
 
-    private void initStart() {
-        startPane = new GridPane();
+    private void initSettings() {
+        settingPane = new GridPane();
         VBox infoBox = new VBox();
         infoBox.setPadding(new Insets(15, 12, 15, 12));
         infoBox.setSpacing(10);
@@ -153,18 +153,18 @@ public class SettingsView {
         initControllLabels(controllBox);
         controllBox.getStylesheets().add("css/controlls.css");
 
-        startPane.add(infoBox, 1, 1); //col, row
-        startPane.add(controllBox, 2, 1);
+        settingPane.add(infoBox, 1, 1); //col, row
+        settingPane.add(controllBox, 2, 1);
 
         Button btn = new Button(buttonApply);
         btn.setOnMouseClicked(new SettingsView.SettingSubmit());
         btn.setFocusTraversable(false);
         btn.getStylesheets().add("css/settings.css");
-        VBox vbox = new VBox(startPane, btn);
+        VBox vbox = new VBox(settingPane, btn);
         vbox.setPadding(new Insets(Settings.BORDERSIZE, 0, 60, Settings.BORDERSIZE));
         vbox.setSpacing(10);
         vbox.setAlignment(Pos.CENTER);
-        startGroup = new Group(vbox);
+        settingGroup = new Group(vbox);
     }
 
     private Color getColorFromMap(String id) {
@@ -205,13 +205,13 @@ public class SettingsView {
             Group group = (Group) node;
             System.out.println("");
             VBox vbox = (VBox) group.getChildren().get(0);
-            double height = startPane.getHeight();
-            double width = startPane.getWidth();
+            double height = settingPane.getHeight();
+            double width = settingPane.getWidth();
             System.out.println("width: " + width + "height: " + height);
-            VBox parent = (VBox) startPane.getParent();
+            VBox parent = (VBox) settingPane.getParent();
 
             Rectangle rect = new Rectangle(width + (Settings.BORDERSIZE * 2), height + (Settings.BORDERSIZE * 2), Color.BLACK);
-            startGroup.getChildren().add(rect);
+            settingGroup.getChildren().add(rect);
             vbox.toFront();
         }
     }
@@ -281,7 +281,7 @@ public class SettingsView {
     }
 
     public void addRectSettings() {
-        addRectToGroup(startGroup);
+        addRectToGroup(settingGroup);
     }
 
     public void updateLabel(Label label, String text) {
