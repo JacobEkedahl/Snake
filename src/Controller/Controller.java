@@ -8,6 +8,7 @@ package Controller;
 import Model.Converter;
 import Model.Game;
 import Model.Position;
+import Model.Settings;
 import View.BoardInfo;
 import View.BoardView;
 import View.SettingsView;
@@ -30,10 +31,12 @@ public class Controller {
     private BoardView boardView;
     private SettingsView settingView;
     private BoardInfo boardInfo;
+    private Settings settings;
 
     private Converter converter;
 
     public Controller(Game sharedGame, Converter converter) {
+        settings = Settings.getInstance();
         game = sharedGame;
         this.converter = converter;
     }
@@ -75,11 +78,11 @@ public class Controller {
             String keySelected = event.getCode().getName().toUpperCase();
             settingView.setLabel(keySelected);
         //ingame functions
-        } else if (event.getCode() == KeyCode.valueOf(boardView.getLeftKey())) {
+        } else if (event.getCode() == KeyCode.valueOf(settings.getLeftKey())) {
             game.goLeft();
-        } else if (event.getCode() == KeyCode.valueOf(boardView.getRightKey())) {
+        } else if (event.getCode() == KeyCode.valueOf(settings.getRightKey())) {
             game.goRight();
-        } else if (event.getCode() == KeyCode.valueOf(boardView.getRestartKey())) {
+        } else if (event.getCode() == KeyCode.valueOf(settings.getRestartKey())) {
             boardView.changeSizeToBoard();
             game.init();
             boardInfo.clearWormholeInfo();
