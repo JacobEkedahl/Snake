@@ -1,9 +1,7 @@
 # Snake
 The classic snake game
 
-![In Game](https://github.com/JacobEkedahl/Snake/blob/master/preview/gamedark.png "In Game")
-![Game Over](https://github.com/JacobEkedahl/Snake/blob/master/preview/gameoverdark.png "Game Over")
-![Settings](https://github.com/JacobEkedahl/Snake/blob/master/preview/settingsWithcolor.png "Setings")
+![In Game](https://github.com/JacobEkedahl/Snake/blob/master/preview/gamedark.png "In Game")![Game Over](https://github.com/JacobEkedahl/Snake/blob/master/preview/gameoverdark.png "Game Over")![Settings](https://github.com/JacobEkedahl/Snake/blob/master/preview/settingsWithcolor.png "Setings")
 ![Stats](https://github.com/JacobEkedahl/Snake/blob/master/preview/statistics.PNG "Stats")
 
 Settings is found in Settings.java
