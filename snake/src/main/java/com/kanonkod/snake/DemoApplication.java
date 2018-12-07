@@ -1,0 +1,14 @@
+package com.kanonkod.snake;
+
+import com.kanonkod.snake.View.BoardView;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class DemoApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(BoardView.class, args);
+	}
+}
