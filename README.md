@@ -1,3 +1,4 @@
+# Snake
 Compiles and runs with maven version: 3.5.4 and java jdk: 1.8.0_191
 
 To compile and run: (make sure to have installed maven and java jdk 8 or above)
@@ -8,7 +9,6 @@ java -jar target/<NAME_OF_JARFILE>.jar
 Try out the game:
  * https://github.com/JacobEkedahl/Snake/releases
 
-# Snake
 A modified version of the classical snake game.
 
 Main Features:
