@@ -97,9 +97,14 @@ public class BoardView extends Application {
     private ResultView resultView;
     private Settings settings;
 
+    public static void main(String[] args) {
+        Application.launch(BoardView.class,args);
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
+        System.out.println("started board..");
         primaryStage.getIcons().add(new Image("img/icon.png"));
         settings = Settings.getInstance();
         setupGame();

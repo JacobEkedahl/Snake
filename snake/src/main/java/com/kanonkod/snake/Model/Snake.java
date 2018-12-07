@@ -25,7 +25,9 @@ public class Snake {
     private int direction;
 
     public Snake(int size, int centerX, int centerY) {
+        System.out.println("Creating snake");
         initSnake(size, centerX, centerY);
+        System.out.println("snake created");
     }
 
     private void initSnake(int size, int centerX, int centerY) {
