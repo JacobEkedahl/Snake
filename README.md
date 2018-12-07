@@ -1,8 +1,8 @@
 # Snake
 The classic snake game
 
-![In Game](https://github.com/JacobEkedahl/Snake/blob/master/preview/gamedark.png "In Game")![Game Over](https://github.com/JacobEkedahl/Snake/blob/master/preview/gameoverdark.png "Game Over")![Settings](https://github.com/JacobEkedahl/Snake/blob/master/preview/settingsWithcolor.png "Setings")
-![Stats](https://github.com/JacobEkedahl/Snake/blob/master/preview/statistics.PNG "Stats")
+![In Game](https://github.com/JacobEkedahl/Snake/tree/master/snake/src/main/resources/preview/gamedark.png "In Game")![Game Over](https://github.com/JacobEkedahl/Snake/tree/master/snake/src/main/resources/preview/gameoverdark.png "Game Over")![Settings](https://github.com/JacobEkedahl/Snake/tree/master/snake/src/main/resources/preview/settingsWithcolor.png "Setings")
+![Stats](https://github.com/JacobEkedahl/Snake/tree/master/snake/src/main/resources/preview/statistics.PNG "Stats")
 
 Settings is found in Settings.java
 It is a singleton class used by most viewclasses and controller.
