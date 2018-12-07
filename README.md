@@ -21,6 +21,5 @@ Compiles and runs with maven version: 3.5.4 and java jdk: 1.8.0_191
 Generate wormholes at random positions, decide the interval and/or enable addon of wormholes manually with mouse.
 The design and theme of game can be customized to your fit. Different colors for snake, apples, background, size of screen etc
 Choose level of difficulty, choose size of snake and intial speed of snake.
---------------------------------------------------------------------
 ![In Game](https://github.com/JacobEkedahl/Snake/blob/master/snake/src/main/resources/preview/gamedark.png?raw=true "In Game")![Game Over](https://github.com/JacobEkedahl/Snake/blob/master/snake/src/main/resources/preview/gameoverdark.png?raw=true "Game Over")![Settings]
 ![Stats](https://github.com/JacobEkedahl/Snake/blob/master/snake/src/main/resources/preview/statistics.PNG?raw=true "Stats")
