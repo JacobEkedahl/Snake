@@ -1,0 +1,22 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 2018-jun-19, 20:12:10
+    Author     : Jacob
+*/
+
+.label {
+    -fx-font-size: 30;
+    -fx-font-weight: bold;
+}
+
+.label:hover {
+    -fx-opacity: 0.5;
+}
+
+.gridpane {
+    -fx-grid-lines-visible: true;
+}
