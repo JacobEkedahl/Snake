@@ -1,23 +1,23 @@
 # Snake
-A modified version of the classical snake game.
+A modified version of the classical snake game. 
 Compiles and runs with maven version: 3.5.4 and java jdk: 1.8.0_191
--------------------------------------------------------------------
-To compile and run: (make sure to have installed maven and java jdk 8 or above)
+
+## To compile and run: (make sure to have installed maven and java jdk 8 or above)
 * mvn clean
 * mvn package
 * java -jar target/<NAME_OF_JARFILE>.jar
 -------------------------------------------------------------------
-# Try out the game:
- * https://github.com/JacobEkedahl/Snake/releases
+## Try out the game:
+ * [Releases]https://github.com/JacobEkedahl/Snake/releases
  * Start game by pressing space
 -------------------------------------------------------------------
-# Main Features:
+## Main Features:
  * Wormholes (Comes in pairs)
  * Apples
  * Snake
  * Wall (edge of screen) 
  ------------------------------------------------------------------
-# Customizable:
+## Customizable:
 Generate wormholes at random positions, decide the interval and/or enable addon of wormholes manually with mouse.
 The design and theme of game can be customized to your fit. Different colors for snake, apples, background, size of screen etc
 Choose level of difficulty, choose size of snake and intial speed of snake.
